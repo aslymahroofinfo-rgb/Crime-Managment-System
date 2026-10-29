@@ -1,13 +1,15 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { usePageTransition } from '../../context/PageTransitionContext';
 
 export default function AdminSidebar() {
   const { user, isSuperAdmin, logout } = useAuth();
   const navigate = useNavigate();
+  const { navigateWithTransition } = usePageTransition();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigateWithTransition('/login');
   };
 
   const roleText = isSuperAdmin ? 'Super Administrator' : 'Control Panel';

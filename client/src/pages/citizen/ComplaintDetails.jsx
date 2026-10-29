@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { complaintService } from '../../services/complaintService';
+import CaseFileDocument from '../../components/common/CaseFileDocument';
+import { generateCaseFilePdf } from '../../utils/generateCaseFilePdf';
 
 function formatDate(dateString) {
   if (!dateString) return '-';
@@ -217,6 +219,22 @@ export default function ComplaintDetails() {
   const [accessDenied, setAccessDenied] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState('');
+
+  const handleDownloadPdf = async () => {
+    if (!complaint) return;
+    setPdfLoading(true);
+    setPdfError('');
+    try {
+      await generateCaseFilePdf(complaint);
+    } catch (err) {
+      console.error('Case file PDF generation error:', err);
+      setPdfError('Unable to generate case file PDF. Please try again.');
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchDetails();
@@ -331,27 +349,68 @@ export default function ComplaintDetails() {
   return (
     <main className="container my-5 flex-grow-1">
 
-      {/* Top breadcrumb & navigation links */}
-      <div className="mb-4 d-flex justify-content-between align-items-center flex-wrap g-2">
-        <div>
-          <Link to="/dashboard" className="text-decoration-none small fw-semibold" style={{ color: 'var(--primary)' }}>
-            <i className="bi bi-arrow-left me-1"></i> Back to Dashboard
-          </Link>
-          <h2 className="fw-bold text-dark mt-2 mb-1">Incident File Details</h2>
-          <p className="text-muted small mb-0">Official police record file details, logs, and investigation timeline.</p>
-        </div>
-        <div className="d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-outline-secondary px-3 py-2 btn-sm fw-semibold"
-            onClick={() => window.print()}
-          >
-            <i className="bi bi-printer-fill me-1"></i> Print Case File
-          </button>
-        </div>
+      {/* Hidden-on-screen, visible-on-print Official Case Document */}
+      <div className="print-case-document-wrapper">
+        <CaseFileDocument complaint={complaint} generatedAt={new Date()} />
       </div>
 
-      <div className="row g-4">
+      {/* Interactive Web Page View (hidden when printing) */}
+      <div className="interactive-case-view">
+        {/* Top breadcrumb & navigation links */}
+        <div className="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <Link to="/dashboard" className="text-decoration-none small fw-semibold" style={{ color: 'var(--primary)' }}>
+              <i className="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </Link>
+            <h2 className="fw-bold text-dark mt-2 mb-1">Incident File Details</h2>
+            <p className="text-muted small mb-0">Official police record file details, logs, and investigation timeline.</p>
+          </div>
+          <div className="d-flex gap-2 flex-wrap align-items-center">
+            <button
+              type="button"
+              id="btn-print-case"
+              className="btn btn-outline-secondary px-3 py-2 btn-sm fw-semibold d-flex align-items-center gap-1.5"
+              onClick={() => window.print()}
+              title="Print official case file on A4"
+            >
+              <i className="bi bi-printer-fill me-1"></i>
+              <span>Print Case File</span>
+            </button>
+
+            <button
+              type="button"
+              id="btn-download-pdf"
+              className="btn btn-primary px-3 py-2 btn-sm fw-semibold d-flex align-items-center gap-1.5 shadow-sm"
+              style={{ background: 'var(--primary)', borderColor: 'var(--primary)' }}
+              onClick={handleDownloadPdf}
+              disabled={pdfLoading}
+              title="Directly download official case file PDF"
+            >
+              {pdfLoading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  <span>Generating PDF...</span>
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-file-earmark-arrow-down-fill me-1"></i>
+                  <span>Download PDF</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* PDF Generation Error Feedback */}
+        {pdfError && (
+          <div className="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+            <i className="bi bi-exclamation-octagon-fill me-2"></i>
+            <strong>Error:</strong> {pdfError}
+            <button type="button" className="btn-close" onClick={() => setPdfError('')} aria-label="Close"></button>
+          </div>
+        )}
+
+        <div className="row g-4">
 
         {/* LEFT COLUMN: Main Case File details */}
         <div className="col-lg-8">
@@ -582,6 +641,8 @@ export default function ComplaintDetails() {
 
             </div>
           </div>
+
+        </div>
 
         </div>
 

@@ -180,13 +180,16 @@ const mockComplaints = [
 const findMockUserByEmail = (email) => mockUsers.find((user) => user.email.toLowerCase() === String(email).toLowerCase());
 const findMockUserById = (id) => mockUsers.find((user) => user.id === id);
 
+let mockComplaintSeq = 0;
+
 const getNextComplaintId = () => {
-  const lastNumber = mockComplaints.reduce((max, complaint) => {
+  const currentMax = mockComplaints.reduce((max, complaint) => {
     const current = Number(String(complaint.complaintId).split('-').pop() || '0');
     return Math.max(max, current);
   }, 0);
 
-  return `CCMS-${String(lastNumber + 1).padStart(6, '0')}`;
+  mockComplaintSeq = Math.max(mockComplaintSeq, currentMax) + 1;
+  return `CCMS-${String(mockComplaintSeq).padStart(6, '0')}`;
 };
 
 const mockContactInquiries = [

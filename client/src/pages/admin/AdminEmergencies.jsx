@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { adminService } from '../../services/adminService';
+import { AdminEvidenceCard } from './AdminComplaints';
 
 function formatDate(dateString) {
   if (!dateString) return '-';
@@ -180,15 +181,75 @@ export default function AdminEmergencies() {
 
               <div className="modal-body p-4 p-sm-5 bg-white">
                 <div className="row g-4">
-                  <div className="col-sm-6">
-                    <span className="text-muted small d-block">District / Location</span>
-                    <strong className="text-dark fs-5">{selectedCase.district || 'Unspecified'}</strong>
-                    <div className="small text-muted">{selectedCase.location}</div>
+                  <div className="col-sm-6 col-md-4">
+                    <span className="text-muted small d-block">Complaint ID</span>
+                    <strong className="text-dark fs-5 font-monospace">{selectedCase.complaintId}</strong>
                   </div>
-                  <div className="col-sm-6">
+                  <div className="col-sm-6 col-md-4">
+                    <span className="text-muted small d-block">District</span>
+                    <strong className="text-dark fs-5">{selectedCase.district || 'Unspecified'}</strong>
+                  </div>
+                  <div className="col-md-4">
                     <span className="text-muted small d-block">Incident Timestamp</span>
-                    <strong className="text-dark fs-5">{formatDate(selectedCase.incidentDate || selectedCase.createdAt)}</strong>
+                    <strong className="text-dark fs-6">{formatDate(selectedCase.incidentDate || selectedCase.createdAt)}</strong>
                     <div className="small text-muted">{selectedCase.incidentTime || ''}</div>
+                  </div>
+
+                  {/* Reporter Contact Information */}
+                  <div className="col-12 pt-2 border-top">
+                    <div className="row g-3">
+                      <div className="col-sm-6 col-md-6">
+                        <span className="text-muted small d-block">Reporter NIC</span>
+                        <strong className="text-dark">
+                          {selectedCase.reporterContact?.nic || 'Not provided'}
+                        </strong>
+                      </div>
+                      <div className="col-sm-6 col-md-6">
+                        <span className="text-muted small d-block">Reporter Phone</span>
+                        <strong className="text-dark">
+                          {selectedCase.reporterContact?.phone || (selectedCase.user?.phoneNumber || 'Not provided')}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Structured Location Information */}
+                  <div className="col-12 pt-2 border-top">
+                    <span className="text-muted small d-block fw-semibold mb-2">Location Information</span>
+                    <div className="p-3 bg-light rounded-3 border">
+                      <div className="row g-2">
+                        <div className="col-sm-6 col-md-3">
+                          <span className="text-muted small d-block">District</span>
+                          <span className="fw-semibold text-dark">{selectedCase.district || '-'}</span>
+                        </div>
+                        <div className="col-sm-6 col-md-3">
+                          <span className="text-muted small d-block">Town / City</span>
+                          <span className="fw-semibold text-dark">{selectedCase.locationDetails?.town || '-'}</span>
+                        </div>
+                        <div className="col-md-6">
+                          <span className="text-muted small d-block">Nearby Landmark / Description</span>
+                          <span className="fw-semibold text-dark">
+                            {selectedCase.locationDetails?.landmarkDescription || selectedCase.location || '-'}
+                          </span>
+                        </div>
+                        {(selectedCase.locationDetails?.address || selectedCase.locationDetails?.additionalNotes) && (
+                          <>
+                            {selectedCase.locationDetails?.address && (
+                              <div className="col-md-6 mt-2">
+                                <span className="text-muted small d-block">Street / Address</span>
+                                <span className="text-dark small">{selectedCase.locationDetails.address}</span>
+                              </div>
+                            )}
+                            {selectedCase.locationDetails?.additionalNotes && (
+                              <div className="col-md-6 mt-2">
+                                <span className="text-muted small d-block">Location Notes</span>
+                                <span className="text-dark small">{selectedCase.locationDetails.additionalNotes}</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="col-12">
@@ -216,6 +277,91 @@ export default function AdminEmergencies() {
                       </div>
                     </div>
                   )}
+
+                  {/* Evidence Attachments */}
+                  <div className="col-12 pt-3 border-top">
+                    <h6 className="fw-bold text-dark mb-3">
+                      <i className="bi bi-images text-danger me-2"></i>Emergency Evidence Attachments ({Array.isArray(selectedCase.evidenceFiles) ? selectedCase.evidenceFiles.length : 0})
+                    </h6>
+
+                    {(!Array.isArray(selectedCase.evidenceFiles) || selectedCase.evidenceFiles.length === 0) ? (
+                      <p className="text-muted small mb-0">No evidence files were attached to this emergency report.</p>
+                    ) : (
+                      <div className="d-flex flex-wrap gap-2">
+                        {selectedCase.evidenceFiles.map((filename, idx) => (
+                          <AdminEvidenceCard
+                            key={idx}
+                            complaintId={selectedCase.complaintId || selectedCase._id}
+                            filename={filename}
+                            index={idx}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Submission Security Information */}
+                  <div className="col-12 pt-3 border-top">
+                    <h6 className="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
+                      <i className="bi bi-shield-lock-fill text-danger"></i>
+                      <span>Submission Security Information</span>
+                    </h6>
+
+                    {selectedCase.submissionMetadata ? (
+                      <div className="p-3 bg-light rounded-3 border">
+                        <div className="row g-3 small">
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Observed IP Address</span>
+                            <strong className="text-dark font-monospace">
+                              {selectedCase.submissionMetadata.ipAddress || 'Not recorded'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Device Category</span>
+                            <strong className="text-dark">
+                              {selectedCase.submissionMetadata.deviceType || 'Desktop'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Browser / Client</span>
+                            <strong className="text-dark">
+                              {selectedCase.submissionMetadata.browser || 'Browser'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Operating System</span>
+                            <strong className="text-dark">
+                              {selectedCase.submissionMetadata.operatingSystem || 'OS'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-4">
+                            <span className="text-muted d-block">Submission Timestamp</span>
+                            <span className="text-dark">
+                              {selectedCase.submissionMetadata.submittedAt
+                                ? new Date(selectedCase.submissionMetadata.submittedAt).toLocaleString()
+                                : formatDate(selectedCase.createdAt)}
+                            </span>
+                          </div>
+                          <div className="col-sm-6 col-md-4">
+                            <span className="text-muted d-block">Submission Channel</span>
+                            <span className="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle">
+                              {selectedCase.submissionMetadata.source || 'Web Portal'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 pt-2 border-top text-muted" style={{ fontSize: '0.75rem' }}>
+                          <i className="bi bi-info-circle me-1 text-danger"></i>
+                          <em>Technical submission information may assist abuse investigations but does not by itself verify a person's identity.</em>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3 bg-light rounded-3 border small text-muted">
+                        <i className="bi bi-info-circle me-1"></i>
+                        Technical submission metadata is not recorded for this legacy emergency report.
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 

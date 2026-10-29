@@ -1,10 +1,12 @@
 const Complaint = require('../models/Complaint');
 const User = require('../models/User');
+const Counter = require('../models/Counter');
 const path = require('path');
 const fs = require('fs');
 const { mockComplaints, findMockUserById, getNextComplaintId } = require('../mockData');
 const { logAudit } = require('../services/auditService');
 const { sendComplaintSubmittedEmail, sendComplaintStatusChangedEmail } = require('../services/emailService');
+const { getClientIp, maskIp, parseUserAgent } = require('../utils/clientInfo');
 
 const uploadsDir = path.resolve(__dirname, '../uploads');
 
@@ -59,6 +61,21 @@ const serializeComplaint = (complaint) => {
     incidentDate: complaint.incidentDate,
     incidentTime: complaint.incidentTime,
     location: complaint.location,
+    locationDetails: complaint.locationDetails || {
+      district: complaint.district || '',
+      town: '',
+      landmarkDescription: '',
+      address: complaint.location || '',
+      additionalNotes: ''
+    },
+    reporterContact: complaint.reporterContact || {
+      nic: null,
+      phone: null,
+      phoneProvided: false,
+      phoneVerified: false
+    },
+    submissionMetadata: complaint.submissionMetadata ? { ...complaint.submissionMetadata } : undefined,
+    isEmergency: Boolean(complaint.isEmergency),
     description: complaint.description,
     suspectDetails: complaint.suspectDetails || '',
     witnessDetails: complaint.witnessDetails || '',
@@ -74,22 +91,171 @@ const serializeComplaint = (complaint) => {
   };
 };
 
+const initComplaintCounterIfNeeded = async () => {
+  try {
+    const allComplaints = await Complaint.find({}, { complaintId: 1 });
+    let maxNum = 0;
+    allComplaints.forEach((c) => {
+      if (c.complaintId) {
+        const match = String(c.complaintId).match(/(\d+)$/);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (!isNaN(num) && num > maxNum) {
+            maxNum = num;
+          }
+        }
+      }
+    });
+
+    const existing = await Counter.findById('complaintId');
+    if (!existing) {
+      await Counter.create({ _id: 'complaintId', seq: maxNum });
+      console.log(`[Counter] Created complaintId sequence initialized at ${maxNum}`);
+    } else if (existing.seq < maxNum) {
+      await Counter.findByIdAndUpdate('complaintId', { $set: { seq: maxNum } });
+      console.log(`[Counter] Synchronized complaintId sequence forward to ${maxNum}`);
+    }
+  } catch (err) {
+    console.error('[Counter] Error checking/synchronizing counter:', err.message);
+  }
+};
+
 const generateComplaintId = async () => {
   if (global.useMockData) {
     return getNextComplaintId();
   }
 
-  const count = await Complaint.countDocuments();
-  return `CCMS-${String(count + 1).padStart(6, '0')}`;
+  // Ensure counter is initialized and synchronized with highest existing ID
+  await initComplaintCounterIfNeeded();
+
+  const updated = await Counter.findByIdAndUpdate(
+    'complaintId',
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+
+  return `CCMS-${String(updated.seq).padStart(6, '0')}`;
 };
 
 const submitComplaint = async (req, res) => {
   try {
-    const { title, category, district, incidentDate, incidentTime, location, description, suspectDetails, witnessDetails, isAnonymous } = req.body;
+    const {
+      title,
+      category,
+      district,
+      incidentDate,
+      incidentTime,
+      location,
+      description,
+      suspectDetails,
+      witnessDetails,
+      isAnonymous,
+      town,
+      landmarkDescription,
+      address,
+      additionalNotes,
+      nic,
+      phone,
+      isEmergency
+    } = req.body;
 
-    if (!title || !category || !district || !incidentDate || !location || !description) {
-      return res.status(400).json({ message: 'Title, category, district, incident date, location, and description are required.' });
+    const isUrgent = isEmergency === true || isEmergency === 'true' || String(category || '').toLowerCase() === 'emergency';
+
+    const districtStr = district ? String(district).trim() : '';
+    const townStr = town ? String(town).trim() : '';
+    const landmarkStr = landmarkDescription ? String(landmarkDescription).trim() : '';
+    const addressStr = address ? String(address).trim() : '';
+    const notesStr = additionalNotes ? String(additionalNotes).trim() : '';
+    const descStr = description ? String(description).trim() : '';
+
+    if (isUrgent) {
+      if (!districtStr || !townStr || !landmarkStr || !descStr) {
+        return res.status(400).json({
+          message: 'District, Town/City, Nearby Landmark/Location Description, and Incident Description are required for emergency reports.'
+        });
+      }
+    } else {
+      const hasLocation = Boolean(location && String(location).trim()) || (townStr && landmarkStr);
+      if (!title || !category || !districtStr || !incidentDate || !hasLocation || !descStr) {
+        return res.status(400).json({
+          message: 'Title, category, district, incident date, location, and description are required.'
+        });
+      }
     }
+
+    // Optional NIC Validation
+    let cleanNic = null;
+    if (nic !== undefined && nic !== null && String(nic).trim() !== '') {
+      const nicCandidate = String(nic).trim();
+      const nicRegex = /^([0-9]{9}[vVxX]|[0-9]{12})$/;
+      if (!nicRegex.test(nicCandidate)) {
+        return res.status(400).json({
+          message: 'Invalid NIC format. Please enter a valid 9-digit (with V/X) or 12-digit National Identity Card number.'
+        });
+      }
+      cleanNic = nicCandidate;
+    }
+
+    // Optional Phone Validation
+    let cleanPhone = null;
+    if (phone !== undefined && phone !== null && String(phone).trim() !== '') {
+      const phoneCandidate = String(phone).trim();
+      const strippedPhone = phoneCandidate.replace(/[\s\-()]/g, '');
+      const phoneRegex = /^\+?[0-9]{9,15}$/;
+      if (!phoneRegex.test(strippedPhone)) {
+        return res.status(400).json({
+          message: 'Invalid phone number format. Please provide a valid contact number (9-15 digits).'
+        });
+      }
+      cleanPhone = phoneCandidate;
+    }
+
+    const reporterContact = {
+      nic: cleanNic,
+      phone: cleanPhone,
+      phoneProvided: Boolean(cleanPhone),
+      phoneVerified: false
+    };
+
+    // Structured Location Construction
+    const locationDetails = {
+      district: districtStr,
+      town: townStr,
+      landmarkDescription: landmarkStr,
+      address: addressStr,
+      additionalNotes: notesStr
+    };
+
+    let compositeLocation = location ? String(location).trim() : '';
+    if (!compositeLocation) {
+      if (landmarkStr && townStr) {
+        compositeLocation = `${landmarkStr}, ${townStr}`;
+      } else if (townStr) {
+        compositeLocation = townStr;
+      } else if (districtStr) {
+        compositeLocation = districtStr;
+      }
+    }
+
+    // Server-observed Technical Metadata (NEVER accept client-supplied req.body.ipAddress)
+    const serverIp = getClientIp(req);
+    const userAgentHeader = req.headers['user-agent'] || 'Unknown';
+    const parsedUa = parseUserAgent(userAgentHeader);
+
+    const submissionMetadata = {
+      ipAddress: serverIp,
+      userAgent: userAgentHeader,
+      deviceType: parsedUa.deviceType,
+      browser: parsedUa.browser,
+      operatingSystem: parsedUa.operatingSystem,
+      submittedAt: new Date(),
+      source: req.body.source ? String(req.body.source).trim() : 'Web Portal'
+    };
+
+    const finalTitle = title ? String(title).trim() : (isUrgent ? 'Emergency Incident Report' : 'Incident Report');
+    const finalCategory = isUrgent ? 'Emergency' : String(category).trim();
+    const finalIncidentDate = incidentDate || new Date().toISOString().split('T')[0];
+    const finalIncidentTime = incidentTime ? String(incidentTime).trim() : new Date().toTimeString().split(' ')[0].substring(0, 5);
 
     const isAnon = isAnonymous === true || isAnonymous === 'true';
     const files = req.files ? req.files.map((file) => file.filename || path.basename(file.path)) : [];
@@ -108,13 +274,17 @@ const submitComplaint = async (req, res) => {
       const complaint = {
         complaintId,
         userId: req.user && req.user.id ? req.user.id : null,
-        title: String(title).trim(),
-        category: String(category).trim(),
-        district: String(district).trim(),
-        incidentDate,
-        incidentTime: incidentTime ? String(incidentTime).trim() : '',
-        location: String(location).trim(),
-        description: String(description).trim(),
+        title: finalTitle,
+        category: finalCategory,
+        district: districtStr,
+        incidentDate: finalIncidentDate,
+        incidentTime: finalIncidentTime,
+        location: compositeLocation,
+        locationDetails,
+        reporterContact,
+        submissionMetadata,
+        isEmergency: isUrgent,
+        description: descStr,
         suspectDetails: suspectDetails ? String(suspectDetails).trim() : '',
         witnessDetails: witnessDetails ? String(witnessDetails).trim() : '',
         isAnonymous: isAnon,
@@ -136,7 +306,7 @@ const submitComplaint = async (req, res) => {
         action: 'COMPLAINT_CREATED',
         entityType: 'Complaint',
         entityId: complaintId,
-        metadata: { title, category, district, isAnonymous: isAnon }
+        metadata: { title: finalTitle, category: finalCategory, district: districtStr, isAnonymous: isAnon, isEmergency: isUrgent }
       });
 
       // Email Notification (Safe non-blocking)
@@ -147,38 +317,79 @@ const submitComplaint = async (req, res) => {
         });
       }
 
-      return res.status(201).json({ message: 'Complaint submitted successfully', complaintId });
+      const responsePayload = {
+        complaintId,
+        title: complaint.title,
+        category: complaint.category,
+        district: complaint.district,
+        status: complaint.status,
+        createdAt: complaint.createdAt,
+        isAnonymous: complaint.isAnonymous,
+        isEmergency: complaint.isEmergency,
+        evidenceCount: files.length
+      };
+
+      return res.status(201).json({
+        message: 'Complaint submitted successfully',
+        complaintId,
+        complaint: responsePayload
+      });
     }
 
-    const complaintId = await generateComplaintId();
+    // Real MongoDB Insertion with Duplicate-Key Self-Recovery (up to 3 retries)
+    let savedComplaint = null;
+    let complaintId = null;
+    let attempts = 0;
 
-    const complaint = new Complaint({
-      complaintId,
-      user: req.user ? req.user.id : null,
-      title: String(title).trim(),
-      category: String(category).trim(),
-      district: String(district).trim(),
-      incidentDate,
-      incidentTime: incidentTime ? String(incidentTime).trim() : '',
-      location: String(location).trim(),
-      description: String(description).trim(),
-      suspectDetails: suspectDetails ? String(suspectDetails).trim() : '',
-      witnessDetails: witnessDetails ? String(witnessDetails).trim() : '',
-      isAnonymous: isAnon,
-      evidenceFiles: files,
-      status: 'Pending',
-      isArchived: false,
-      statusHistory: [
-        {
+    while (attempts < 3 && !savedComplaint) {
+      attempts++;
+      complaintId = await generateComplaintId();
+
+      try {
+        const complaint = new Complaint({
+          complaintId,
+          user: req.user ? req.user.id : null,
+          title: finalTitle,
+          category: finalCategory,
+          district: districtStr,
+          incidentDate: finalIncidentDate,
+          incidentTime: finalIncidentTime,
+          location: compositeLocation,
+          locationDetails,
+          reporterContact,
+          submissionMetadata,
+          isEmergency: isUrgent,
+          description: descStr,
+          suspectDetails: suspectDetails ? String(suspectDetails).trim() : '',
+          witnessDetails: witnessDetails ? String(witnessDetails).trim() : '',
+          isAnonymous: isAnon,
+          evidenceFiles: files,
           status: 'Pending',
-          changedAt: new Date(),
-          changedByRole: 'Citizen',
-          note: 'Initial incident filing'
-        }
-      ]
-    });
+          isArchived: false,
+          statusHistory: [
+            {
+              status: 'Pending',
+              changedAt: new Date(),
+              changedByRole: 'Citizen',
+              note: 'Initial incident filing'
+            }
+          ]
+        });
 
-    await complaint.save();
+        savedComplaint = await complaint.save();
+      } catch (insertErr) {
+        if (insertErr.code === 11000 && attempts < 3) {
+          console.warn(`[Complaint] Duplicate complaintId ${complaintId} detected. Resynchronizing counter and retrying...`);
+          await initComplaintCounterIfNeeded();
+        } else {
+          throw insertErr;
+        }
+      }
+    }
+
+    if (!savedComplaint) {
+      throw new Error('Failed to generate unique complaint sequence after multiple attempts.');
+    }
 
     // Audit Log
     await logAudit({
@@ -188,17 +399,33 @@ const submitComplaint = async (req, res) => {
       action: 'COMPLAINT_CREATED',
       entityType: 'Complaint',
       entityId: complaintId,
-      metadata: { title, category, district, isAnonymous: isAnon }
+      metadata: { title: finalTitle, category: finalCategory, district: districtStr, isAnonymous: isAnon, isEmergency: isUrgent }
     });
 
     // Email Notification (Safe non-blocking)
     if (!isAnon && req.user && req.user.email) {
-      sendComplaintSubmittedEmail(req.user.email, complaint).catch(err => {
+      sendComplaintSubmittedEmail(req.user.email, savedComplaint).catch(err => {
         console.error('Email notification background error:', err.message);
       });
     }
 
-    res.status(201).json({ message: 'Complaint submitted successfully', complaintId });
+    const responsePayload = {
+      complaintId: savedComplaint.complaintId,
+      title: savedComplaint.title,
+      category: savedComplaint.category,
+      district: savedComplaint.district,
+      status: savedComplaint.status || 'Pending',
+      createdAt: savedComplaint.createdAt,
+      isAnonymous: savedComplaint.isAnonymous,
+      isEmergency: savedComplaint.isEmergency,
+      evidenceCount: files.length
+    };
+
+    res.status(201).json({
+      message: 'Complaint submitted successfully',
+      complaintId: savedComplaint.complaintId,
+      complaint: responsePayload
+    });
   } catch (error) {
     if (req.files && Array.isArray(req.files)) {
       req.files.forEach(file => {
@@ -223,10 +450,15 @@ const getMyComplaints = async (req, res) => {
         .filter((complaint) => complaint.userId === req.user.id && !complaint.isArchived)
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-      return res.json(complaints.map(serializeComplaint));
+      return res.json(complaints.map(serializeComplaint).map(c => {
+        delete c.submissionMetadata;
+        return c;
+      }));
     }
 
-    const complaints = await Complaint.find({ user: req.user.id, isArchived: { $ne: true } }).sort({ createdAt: -1 });
+    const complaints = await Complaint.find({ user: req.user.id, isArchived: { $ne: true } })
+      .select('-submissionMetadata')
+      .sort({ createdAt: -1 });
     res.json(complaints);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -239,6 +471,7 @@ const getAllComplaints = async (req, res) => {
     const isPaginated = page !== undefined || limit !== undefined;
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 25));
+    const isSuperAdmin = req.user && req.user.role === 'SuperAdmin';
 
     if (global.useMockData) {
       let filtered = [...mockComplaints];
@@ -275,10 +508,18 @@ const getAllComplaints = async (req, res) => {
 
       const mapped = resultList.map((complaint) => {
         const item = serializeComplaint(complaint);
-        return {
+        const doc = {
           ...item,
           user: complaint.isAnonymous ? null : item.user
         };
+        if (doc.submissionMetadata) {
+          if (!isSuperAdmin) {
+            doc.submissionMetadata.ipAddress = maskIp(doc.submissionMetadata.ipAddress);
+          } else {
+            doc.submissionMetadata.maskedIp = maskIp(doc.submissionMetadata.ipAddress);
+          }
+        }
+        return doc;
       });
 
       if (isPaginated) {
@@ -335,6 +576,13 @@ const getAllComplaints = async (req, res) => {
       if (doc.isAnonymous) {
         doc.user = null;
       }
+      if (doc.submissionMetadata) {
+        if (!isSuperAdmin) {
+          doc.submissionMetadata.ipAddress = maskIp(doc.submissionMetadata.ipAddress);
+        } else {
+          doc.submissionMetadata.maskedIp = maskIp(doc.submissionMetadata.ipAddress);
+        }
+      }
       return doc;
     });
 
@@ -359,22 +607,33 @@ const getAllComplaints = async (req, res) => {
 const getComplaintById = async (req, res) => {
   try {
     const { id } = req.params;
+    const isAdmin = req.user && (req.user.role === 'Admin' || req.user.role === 'SuperAdmin');
+    const isSuperAdmin = req.user && req.user.role === 'SuperAdmin';
 
     if (global.useMockData) {
       const complaint = mockComplaints.find((entry) => entry.complaintId === id || entry._id === id);
       if (!complaint) return res.status(404).json({ message: 'Complaint not found' });
 
       const serialised = serializeComplaint(complaint);
-      const isAdmin = req.user && (req.user.role === 'Admin' || req.user.role === 'SuperAdmin');
 
       if (!isAdmin) {
-        if (!complaint.userId || complaint.userId !== req.user.id) {
+        const ownerId = complaint.userId ? complaint.userId.toString() : '';
+        const currentUserId = req.user?.id ? req.user.id.toString() : (req.user?._id ? req.user._id.toString() : '');
+        if (!ownerId || ownerId !== currentUserId) {
           return res.status(403).json({ message: 'Access denied. You can only view your own complaints.' });
         }
-      }
-
-      if (complaint.isAnonymous && isAdmin) {
-        serialised.user = null;
+        delete serialised.submissionMetadata;
+      } else {
+        if (complaint.isAnonymous) {
+          serialised.user = null;
+        }
+        if (serialised.submissionMetadata) {
+          if (!isSuperAdmin) {
+            serialised.submissionMetadata.ipAddress = maskIp(serialised.submissionMetadata.ipAddress);
+          } else {
+            serialised.submissionMetadata.maskedIp = maskIp(serialised.submissionMetadata.ipAddress);
+          }
+        }
       }
 
       return res.json(serialised);
@@ -391,18 +650,29 @@ const getComplaintById = async (req, res) => {
 
     if (!complaint) return res.status(404).json({ message: 'Complaint not found' });
 
-    const isAdmin = req.user && (req.user.role === 'Admin' || req.user.role === 'SuperAdmin');
+    const doc = complaint.toObject();
+
     if (!isAdmin) {
-      if (!complaint.user || complaint.user._id.toString() !== req.user.id) {
+      const ownerId = complaint.user?._id ? complaint.user._id.toString() : (complaint.user ? complaint.user.toString() : '');
+      const currentUserId = req.user?.id ? req.user.id.toString() : (req.user?._id ? req.user._id.toString() : '');
+      if (!ownerId || ownerId !== currentUserId) {
         return res.status(403).json({ message: 'Access denied. You can only view your own complaints.' });
       }
-    } else if (complaint.isAnonymous) {
-      const doc = complaint.toObject();
-      doc.user = null;
-      return res.json(doc);
+      delete doc.submissionMetadata;
+    } else {
+      if (complaint.isAnonymous) {
+        doc.user = null;
+      }
+      if (doc.submissionMetadata) {
+        if (!isSuperAdmin) {
+          doc.submissionMetadata.ipAddress = maskIp(doc.submissionMetadata.ipAddress);
+        } else {
+          doc.submissionMetadata.maskedIp = maskIp(doc.submissionMetadata.ipAddress);
+        }
+      }
     }
 
-    res.json(complaint);
+    res.json(doc);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -447,6 +717,7 @@ const trackComplaint = async (req, res) => {
 
       const serialized = serializeComplaint(complaint);
       delete serialized.evidenceFiles;
+      delete serialized.submissionMetadata;
       return res.json(serialized);
     }
 
@@ -479,6 +750,7 @@ const trackComplaint = async (req, res) => {
 
     const complaintDoc = complaint.toObject ? complaint.toObject() : { ...complaint };
     delete complaintDoc.evidenceFiles;
+    delete complaintDoc.submissionMetadata;
     res.json(complaintDoc);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

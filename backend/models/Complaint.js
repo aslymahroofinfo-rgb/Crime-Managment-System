@@ -8,7 +8,30 @@ const complaintSchema = new mongoose.Schema({
   district: { type: String, required: true, trim: true, index: true },
   incidentDate: { type: Date, required: true },
   incidentTime: { type: String, required: true, trim: true },
-  location: { type: String, required: true, trim: true },
+  location: { type: String, trim: true, default: '' },
+  locationDetails: {
+    district: { type: String, trim: true },
+    town: { type: String, trim: true },
+    landmarkDescription: { type: String, trim: true },
+    address: { type: String, trim: true, default: '' },
+    additionalNotes: { type: String, trim: true, default: '' }
+  },
+  reporterContact: {
+    nic: { type: String, trim: true, default: null },
+    phone: { type: String, trim: true, default: null },
+    phoneProvided: { type: Boolean, default: false },
+    phoneVerified: { type: Boolean, default: false }
+  },
+  submissionMetadata: {
+    ipAddress: { type: String, trim: true },
+    userAgent: { type: String, trim: true },
+    deviceType: { type: String, trim: true },
+    browser: { type: String, trim: true },
+    operatingSystem: { type: String, trim: true },
+    submittedAt: { type: Date, default: Date.now },
+    source: { type: String, trim: true, default: 'Web Portal' }
+  },
+  isEmergency: { type: Boolean, default: false, index: true },
   description: { type: String, required: true, trim: true },
   suspectDetails: { type: String, default: '', trim: true },
   witnessDetails: { type: String, default: '', trim: true },

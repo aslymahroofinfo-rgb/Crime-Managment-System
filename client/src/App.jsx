@@ -34,11 +34,17 @@ import AdminReports from './pages/admin/AdminReports';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminAudit from './pages/admin/AdminAudit';
 
+// Global Transition Context & Overlay
+import { PageTransitionProvider } from './context/PageTransitionContext';
+import PageTransition from './components/common/PageTransition';
+
 export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
+        <PageTransitionProvider>
+          <PageTransition />
+          <Routes>
           {/* Public & Citizen Layout Routes */}
           <Route element={<PublicLayout />}>
             <Route index element={<Home />} />
@@ -74,6 +80,7 @@ export default function App() {
             <Route path="audit" element={<AdminAudit />} />
           </Route>
         </Routes>
+        </PageTransitionProvider>
       </Router>
     </AuthProvider>
   );

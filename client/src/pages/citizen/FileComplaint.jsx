@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { usePageTransition } from '../../context/PageTransitionContext';
 import { complaintService } from '../../services/complaintService';
 
 const DISTRICTS = [
@@ -21,6 +22,7 @@ const MAX_FILES = 5;
 
 export default function FileComplaint() {
   const navigate = useNavigate();
+  const { navigateWithTransition } = usePageTransition();
   const fileInputRef = useRef(null);
 
   // Form State
@@ -42,7 +44,8 @@ export default function FileComplaint() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
-  const [successInfo, setSuccessInfo] = useState(null);
+  const [successComplaint, setSuccessComplaint] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Cleanup object URLs on unmount or file change
   useEffect(() => {
@@ -204,18 +207,27 @@ export default function FileComplaint() {
 
       const res = await complaintService.submitComplaint(payload);
 
-      if (res.ok && res.data?.complaintId) {
-        setSuccessInfo({
-          complaintId: res.data.complaintId,
-          isAnonymous: formData.isAnonymous
-        });
+      if (res.ok && (res.data?.complaintId || res.data?.complaint?.complaintId)) {
+        const returnedComplaint = res.data.complaint || {};
+        const authoritativeComplaint = {
+          complaintId: res.data.complaintId || returnedComplaint.complaintId,
+          title: returnedComplaint.title || formData.title.trim(),
+          category: returnedComplaint.category || formData.category,
+          district: returnedComplaint.district || formData.district,
+          status: returnedComplaint.status || 'Pending',
+          createdAt: returnedComplaint.createdAt || new Date().toISOString(),
+          isAnonymous: returnedComplaint.isAnonymous !== undefined ? returnedComplaint.isAnonymous : formData.isAnonymous,
+          evidenceCount: returnedComplaint.evidenceCount !== undefined ? returnedComplaint.evidenceCount : files.length
+        };
+        setSuccessComplaint(authoritativeComplaint);
+        setShowSuccessModal(true);
         handleReset();
       } else {
         setErrorMsg(res.data?.message || 'Submission failed. Please check your information.');
       }
     } catch (err) {
       console.error('Complaint submission error:', err);
-      setErrorMsg('A network or server error occurred. Please verify backend connection.');
+      setErrorMsg(err.response?.data?.message || err.message || 'A network or server error occurred. Please verify backend connection.');
     } finally {
       setLoading(false);
     }
@@ -228,7 +240,155 @@ export default function FileComplaint() {
   else if (descLen >= 750) counterClass = 'text-warning small fw-bold';
 
   return (
-    <main className="container my-5 flex-grow-1">
+    <main className="container my-5 flex-grow-1 position-relative">
+      {/* Centered Submission Success Modal */}
+      {showSuccessModal && successComplaint && (
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          role="dialog"
+          aria-modal="true"
+          style={{
+            backgroundColor: 'rgba(15, 36, 71, 0.75)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 1055
+          }}
+        >
+          <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+              <div
+                className="modal-header border-0 text-white px-4 pt-4 pb-3"
+                style={{ background: 'var(--hero-gradient)' }}
+              >
+                <div className="d-flex align-items-center gap-3">
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center bg-white"
+                    style={{ width: '48px', height: '48px', flexShrink: 0 }}
+                  >
+                    <i className="bi bi-check-circle-fill text-success fs-3"></i>
+                  </div>
+                  <div>
+                    <h5 className="modal-title fw-bold mb-0">Complaint Submitted Successfully</h5>
+                    <p className="text-white-50 small mb-0">Official Law Enforcement Filing Record</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-body p-4">
+                <div className="alert alert-success border-0 bg-success-subtle text-success-emphasis rounded-3 d-flex align-items-center gap-3 mb-4">
+                  <i className="bi bi-shield-check fs-2"></i>
+                  <div>
+                    <span className="fw-semibold d-block">Complaint Securely Logged</span>
+                    <span className="small">
+                      Your complaint has been permanently recorded in the Crime Investigation database and queued for investigation.
+                    </span>
+                  </div>
+                </div>
+
+                {/* Complaint ID Spotlight */}
+                <div className="bg-light border rounded-3 p-3 text-center mb-4">
+                  <span className="text-muted small text-uppercase fw-semibold d-block mb-1">
+                    Complaint Reference ID
+                  </span>
+                  <span
+                    className="font-monospace fw-bold fs-3 text-primary"
+                    style={{ letterSpacing: '1px' }}
+                  >
+                    {successComplaint.complaintId}
+                  </span>
+                  <div className="mt-2">
+                    <span className="badge bg-warning text-dark px-3 py-1">
+                      Status: {successComplaint.status || 'Pending'}
+                    </span>
+                    {successComplaint.isAnonymous ? (
+                      <span className="badge bg-secondary ms-2 px-3 py-1">
+                        <i className="bi bi-incognito me-1"></i>Anonymous Filing
+                      </span>
+                    ) : (
+                      <span className="badge bg-primary ms-2 px-3 py-1">
+                        <i className="bi bi-person-check me-1"></i>Registered Citizen Filing
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Key Complaint Details */}
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <div className="p-3 border rounded-3 h-100 bg-white">
+                      <span className="text-muted small d-block mb-1">Case Title</span>
+                      <strong className="text-dark d-block text-truncate">
+                        {successComplaint.title || 'Untitled'}
+                      </strong>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="p-3 border rounded-3 h-100 bg-white">
+                      <span className="text-muted small d-block mb-1">Crime Category</span>
+                      <strong className="text-dark d-block">
+                        {successComplaint.category || 'N/A'}
+                      </strong>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="p-3 border rounded-3 h-100 bg-white">
+                      <span className="text-muted small d-block mb-1">Jurisdiction / District</span>
+                      <strong className="text-dark d-block">
+                        {successComplaint.district || 'N/A'}
+                      </strong>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="p-3 border rounded-3 h-100 bg-white">
+                      <span className="text-muted small d-block mb-1">Submission Date & Time</span>
+                      <strong className="text-dark d-block">
+                        {successComplaint.createdAt
+                          ? new Date(successComplaint.createdAt).toLocaleString()
+                          : new Date().toLocaleString()}
+                      </strong>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
+                      <div>
+                        <span className="text-muted small d-block">Evidence Files Uploaded</span>
+                        <strong className="text-dark">
+                          {successComplaint.evidenceCount || 0} file(s) attached
+                        </strong>
+                      </div>
+                      <i className="bi bi-paperclip fs-4 text-muted"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-3 text-muted small">
+                  <i className="bi bi-info-circle me-1"></i>
+                  Please note your Complaint Reference ID. You can track this case anytime using this ID. Click <strong>OK</strong> below to view the case details page.
+                </div>
+              </div>
+
+              <div className="modal-footer bg-light px-4 py-3 border-0 d-flex justify-content-end">
+                <button
+                  type="button"
+                  id="btn-confirm-complaint-success"
+                  className="btn btn-primary px-4 py-2 fw-semibold shadow-sm d-flex align-items-center gap-2"
+                  style={{ background: 'var(--primary)', borderColor: 'var(--primary)' }}
+                  onClick={() => {
+                    const targetId = successComplaint.complaintId;
+                    setShowSuccessModal(false);
+                    setSuccessComplaint(null);
+                    navigateWithTransition(`/complaints/${encodeURIComponent(targetId)}`);
+                  }}
+                >
+                  <i className="bi bi-check-lg fs-5"></i>
+                  <span>OK</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="row justify-content-center">
         <div className="col-lg-10 col-xl-9 col-12">
 
@@ -253,52 +413,6 @@ export default function FileComplaint() {
               </span>
             </div>
           </div>
-
-          {/* Success Banner */}
-          {successInfo && (
-            <div className="alert alert-success border-0 shadow-sm rounded-4 p-4 mb-4">
-              <div className="d-flex align-items-center gap-3">
-                <i className="bi bi-check-circle-fill fs-1 text-success"></i>
-                <div className="flex-grow-1">
-                  <h5 className="fw-bold mb-1 text-success">Complaint Submitted Successfully!</h5>
-                  <p className="mb-2 text-dark">
-                    Your complaint has been assigned Reference ID:{' '}
-                    <strong className="font-monospace fs-5 text-primary">{successInfo.complaintId}</strong>
-                  </p>
-                  {successInfo.isAnonymous && (
-                    <div className="badge bg-secondary mb-2">Anonymous Case Report</div>
-                  )}
-                  <p className="small text-muted mb-0">
-                    Keep this reference number safe. You can view case investigation status from your dashboard.
-                  </p>
-                </div>
-              </div>
-              <div className="d-flex gap-2 mt-3 pt-3 border-top">
-                <button
-                  type="button"
-                  className="btn btn-primary btn-sm px-3"
-                  style={{ background: 'var(--primary)', border: 'none' }}
-                  onClick={() => navigate(`/complaints/${encodeURIComponent(successInfo.complaintId)}`)}
-                >
-                  <i className="bi bi-eye-fill me-1"></i> View Case Details
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary btn-sm px-3"
-                  onClick={() => navigate('/dashboard')}
-                >
-                  <i className="bi bi-speedometer2 me-1"></i> Go to Dashboard
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-success btn-sm ms-auto"
-                  onClick={() => setSuccessInfo(null)}
-                >
-                  File Another Complaint
-                </button>
-              </div>
-            </div>
-          )}
 
           {/* General Error Banner */}
           {errorMsg && (

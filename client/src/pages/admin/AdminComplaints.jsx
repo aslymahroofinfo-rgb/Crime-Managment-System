@@ -49,7 +49,7 @@ function getStatusBadge(status) {
 }
 
 // Sub-component for authenticated evidence file
-function AdminEvidenceCard({ complaintId, filename, index }) {
+export function AdminEvidenceCard({ complaintId, filename, index }) {
   const [blobUrl, setBlobUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -666,14 +666,75 @@ export default function AdminComplaints() {
                     <strong className="text-dark">{viewComplaint.category}</strong>
                   </div>
                   <div className="col-sm-6 col-md-4">
-                    <span className="text-muted small d-block">District / Location</span>
-                    <strong className="text-dark">
-                      {viewComplaint.district}{viewComplaint.location ? ` - ${viewComplaint.location}` : ''}
-                    </strong>
+                    <span className="text-muted small d-block">District</span>
+                    <strong className="text-dark">{viewComplaint.district || '-'}</strong>
                   </div>
                   <div className="col-md-4">
                     <span className="text-muted small d-block">Incident Date</span>
                     <strong className="text-dark">{formatDate(viewComplaint.incidentDate || viewComplaint.createdAt)}</strong>
+                  </div>
+
+                  {/* Reporter Contact Information */}
+                  <div className="col-12 pt-2 border-top">
+                    <div className="row g-3">
+                      <div className="col-sm-6 col-md-4">
+                        <span className="text-muted small d-block">Reporter NIC</span>
+                        <strong className="text-dark">
+                          {viewComplaint.reporterContact?.nic || 'Not provided'}
+                        </strong>
+                      </div>
+                      <div className="col-sm-6 col-md-4">
+                        <span className="text-muted small d-block">Reporter Phone</span>
+                        <strong className="text-dark">
+                          {viewComplaint.reporterContact?.phone || (viewComplaint.user?.phoneNumber || 'Not provided')}
+                        </strong>
+                      </div>
+                      <div className="col-sm-6 col-md-4">
+                        <span className="text-muted small d-block">Priority Triage</span>
+                        <span className={`badge ${viewComplaint.isEmergency ? 'bg-danger' : 'bg-secondary bg-opacity-25 text-dark'} px-2.5 py-1.5`}>
+                          {viewComplaint.isEmergency ? 'Emergency Incident' : 'Standard Complaint'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Location Information */}
+                  <div className="col-12 pt-2 border-top">
+                    <span className="text-muted small d-block fw-semibold mb-2">Location Information</span>
+                    <div className="p-3 bg-light rounded-3 border">
+                      <div className="row g-2">
+                        <div className="col-sm-6 col-md-3">
+                          <span className="text-muted small d-block">District</span>
+                          <span className="fw-semibold text-dark">{viewComplaint.district || '-'}</span>
+                        </div>
+                        <div className="col-sm-6 col-md-3">
+                          <span className="text-muted small d-block">Town / City</span>
+                          <span className="fw-semibold text-dark">{viewComplaint.locationDetails?.town || '-'}</span>
+                        </div>
+                        <div className="col-md-6">
+                          <span className="text-muted small d-block">Nearby Landmark / Description</span>
+                          <span className="fw-semibold text-dark">
+                            {viewComplaint.locationDetails?.landmarkDescription || viewComplaint.location || '-'}
+                          </span>
+                        </div>
+                        {(viewComplaint.locationDetails?.address || viewComplaint.locationDetails?.additionalNotes) && (
+                          <>
+                            {viewComplaint.locationDetails?.address && (
+                              <div className="col-md-6 mt-2">
+                                <span className="text-muted small d-block">Street / Address</span>
+                                <span className="text-dark small">{viewComplaint.locationDetails.address}</span>
+                              </div>
+                            )}
+                            {viewComplaint.locationDetails?.additionalNotes && (
+                              <div className="col-md-6 mt-2">
+                                <span className="text-muted small d-block">Location Notes</span>
+                                <span className="text-dark small">{viewComplaint.locationDetails.additionalNotes}</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="col-12">
@@ -725,6 +786,69 @@ export default function AdminComplaints() {
                             index={idx}
                           />
                         ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Submission Security Information */}
+                  <div className="col-12 pt-3 border-top">
+                    <h6 className="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
+                      <i className="bi bi-shield-lock-fill text-primary"></i>
+                      <span>Submission Security Information</span>
+                    </h6>
+
+                    {viewComplaint.submissionMetadata ? (
+                      <div className="p-3 bg-light rounded-3 border">
+                        <div className="row g-3 small">
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Observed IP Address</span>
+                            <strong className="text-dark font-monospace">
+                              {viewComplaint.submissionMetadata.ipAddress || 'Not recorded'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Device Category</span>
+                            <strong className="text-dark">
+                              {viewComplaint.submissionMetadata.deviceType || 'Desktop'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Browser / Client</span>
+                            <strong className="text-dark">
+                              {viewComplaint.submissionMetadata.browser || 'Browser'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-3">
+                            <span className="text-muted d-block">Operating System</span>
+                            <strong className="text-dark">
+                              {viewComplaint.submissionMetadata.operatingSystem || 'OS'}
+                            </strong>
+                          </div>
+                          <div className="col-sm-6 col-md-4">
+                            <span className="text-muted d-block">Submission Timestamp</span>
+                            <span className="text-dark">
+                              {viewComplaint.submissionMetadata.submittedAt
+                                ? new Date(viewComplaint.submissionMetadata.submittedAt).toLocaleString()
+                                : formatDate(viewComplaint.createdAt)}
+                            </span>
+                          </div>
+                          <div className="col-sm-6 col-md-4">
+                            <span className="text-muted d-block">Submission Channel</span>
+                            <span className="badge bg-secondary bg-opacity-25 text-dark">
+                              {viewComplaint.submissionMetadata.source || 'Web Portal'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 pt-2 border-top text-muted" style={{ fontSize: '0.75rem' }}>
+                          <i className="bi bi-info-circle me-1 text-primary"></i>
+                          <em>Technical submission information may assist abuse investigations but does not by itself verify a person's identity.</em>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3 bg-light rounded-3 border small text-muted">
+                        <i className="bi bi-info-circle me-1"></i>
+                        Technical submission metadata is not recorded for this legacy complaint.
                       </div>
                     )}
                   </div>

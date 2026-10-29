@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { usePageTransition } from '../../context/PageTransitionContext';
 import { authService } from '../../services/authService';
 import ToastAlert from '../../components/feedback/ToastAlert';
 
@@ -15,6 +16,7 @@ export default function Login() {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { navigateWithTransition } = usePageTransition();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || '/dashboard';
@@ -48,9 +50,9 @@ export default function Login() {
 
         // Authoritative redirection based on backend role
         if (returnedRole === 'admin' || returnedRole === 'superadmin') {
-          navigate('/admin/dashboard', { replace: true });
+          navigateWithTransition('/admin/dashboard', { replace: true });
         } else {
-          navigate(from === '/login' ? '/dashboard' : from, { replace: true });
+          navigateWithTransition(from === '/login' ? '/dashboard' : from, { replace: true });
         }
       } else {
         setAlertState({

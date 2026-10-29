@@ -17,7 +17,7 @@ mongoose.connect(MONGO_URI)
 
     if (existingAdmin) {
       existingAdmin.password = hashedPassword;
-      existingAdmin.role = 'Admin';
+      existingAdmin.role = 'SuperAdmin';
       if (!existingAdmin.address || typeof existingAdmin.address !== 'object' || !existingAdmin.address.no) {
         existingAdmin.address = {
           no: 'HQ',
@@ -41,7 +41,7 @@ mongoose.connect(MONGO_URI)
           district: 'Colombo'
         },
         password: hashedPassword,
-        role: 'Admin'
+        role: 'SuperAdmin'
       });
       await superAdmin.save();
       console.log('Super Admin successfully seeded!');

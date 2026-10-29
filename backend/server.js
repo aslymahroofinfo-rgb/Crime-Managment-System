@@ -5,6 +5,13 @@ const helmet = require('helmet');
 require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
+const dns = require('dns');
+
+// On Windows / cellular networks, local gateway DNS frequently refuses SRV queries.
+// Set public DNS resolvers (Google & Cloudflare) for reliable SRV resolution.
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+} catch (dnsErr) {}
 
 if (!process.env.JWT_SECRET) {
   console.error('FATAL: JWT_SECRET environment variable is required.');
@@ -100,8 +107,15 @@ const startServer = async () => {
   } else {
     try {
       console.log('[Database] Attempting connection to MongoDB...');
+      // On Windows / cellular networks, local gateway DNS frequently refuses SRV queries.
+      // Set public DNS resolvers (Google & Cloudflare) for reliable SRV resolution.
+      try {
+        const dns = require('dns');
+        dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+      } catch (dnsErr) {}
+
       await mongoose.connect(MONGO_URI, {
-        serverSelectionTimeoutMS: 5000
+        serverSelectionTimeoutMS: 15000
       });
       global.useMockData = false;
       console.log('Successfully connected to MongoDB.');

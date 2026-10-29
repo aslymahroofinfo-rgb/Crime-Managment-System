@@ -7,3 +7,10 @@ easy compalin filing method want to input
 make if case is done want to give message to user by a email or sms after the make changes
 admin users adding in the main admin panel
 disctrict wise user name 
+
+
+test1@gmail.com - test1@1234
+
+Email: admin@ccms.com   Password: Admin@123
+
+

@@ -3,14 +3,27 @@ import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
 import ToastAlert from '../../components/feedback/ToastAlert';
 
+const SRI_LANKA_DISTRICTS = [
+  'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo',
+  'Galle', 'Gampaha', 'Hambantota', 'Jaffna', 'Kalutara',
+  'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala', 'Mannar',
+  'Matale', 'Matara', 'Monaragala', 'Mullaitivu', 'Nuwara Eliya',
+  'Polonnaruwa', 'Puttalam', 'Ratnapura', 'Trincomalee', 'Vavuniya'
+];
+
 export default function Home() {
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [emergencyForm, setEmergencyForm] = useState({
     details: '',
     nic: '',
     phone: '',
-    district: ''
+    district: '',
+    town: '',
+    landmarkDescription: '',
+    address: '',
+    additionalNotes: ''
   });
+  const [evidenceFiles, setEvidenceFiles] = useState([]);
   const [emergencyAlert, setEmergencyAlert] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,46 +46,144 @@ export default function Home() {
     return () => { mounted = false; };
   }, []);
 
+  const handleFileChange = (e) => {
+    const selected = Array.from(e.target.files || []);
+    if (!selected.length) return;
+
+    const allowedMimes = ['image/jpeg', 'image/png', 'application/pdf', 'video/mp4'];
+    const allowedExts = ['.jpg', '.jpeg', '.png', '.pdf', '.mp4'];
+    const maxFiles = 5;
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    const newFiles = [...evidenceFiles];
+    let alertMsg = null;
+
+    for (const file of selected) {
+      if (newFiles.length >= maxFiles) {
+        alertMsg = 'Maximum 5 evidence files allowed.';
+        break;
+      }
+
+      const ext = '.' + (file.name.split('.').pop() || '').toLowerCase();
+      if (!allowedMimes.includes(file.type) && !allowedExts.includes(ext)) {
+        alertMsg = `File "${file.name}" has an unsupported format. Allowed: JPG, PNG, PDF, MP4.`;
+        continue;
+      }
+
+      if (file.size > maxSize) {
+        alertMsg = `File "${file.name}" exceeds the 10 MB limit.`;
+        continue;
+      }
+
+      if (!newFiles.some(f => f.name === file.name && f.size === file.size)) {
+        newFiles.push(file);
+      }
+    }
+
+    setEvidenceFiles(newFiles);
+    if (alertMsg) {
+      setEmergencyAlert({ type: 'warning', message: alertMsg });
+    }
+    // Reset file input
+    e.target.value = '';
+  };
+
+  const removeFile = (indexToRemove) => {
+    setEvidenceFiles(prev => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
   const handleEmergencySubmit = async (e) => {
     e.preventDefault();
     setEmergencyAlert(null);
 
-    if (!emergencyForm.details.trim() || !emergencyForm.nic.trim() || !emergencyForm.phone.trim() || !emergencyForm.district) {
-      setEmergencyAlert({ type: 'danger', message: 'All fields marked with an asterisk are required.' });
+    const { details, district, town, landmarkDescription, nic, phone, address, additionalNotes } = emergencyForm;
+
+    // Required fields validation
+    if (!details.trim() || !district || !town.trim() || !landmarkDescription.trim()) {
+      setEmergencyAlert({
+        type: 'danger',
+        message: 'District, Town/City, Nearby Landmark/Location Description, and Incident Details are required.'
+      });
       return;
+    }
+
+    // Optional NIC validation
+    if (nic && nic.trim()) {
+      const nicRegex = /^([0-9]{9}[vVxX]|[0-9]{12})$/;
+      if (!nicRegex.test(nic.trim())) {
+        setEmergencyAlert({
+          type: 'danger',
+          message: 'Invalid NIC format. Please enter a valid 9-digit (with V/X) or 12-digit National ID.'
+        });
+        return;
+      }
+    }
+
+    // Optional Phone validation
+    if (phone && phone.trim()) {
+      const strippedPhone = phone.trim().replace(/[\s\-()]/g, '');
+      const phoneRegex = /^\+?[0-9]{9,15}$/;
+      if (!phoneRegex.test(strippedPhone)) {
+        setEmergencyAlert({
+          type: 'danger',
+          message: 'Invalid phone format. Please enter a valid contact number (9-15 digits).'
+        });
+        return;
+      }
     }
 
     setIsSubmitting(true);
     try {
-      // Submits as an emergency complaint to backend
-      const res = await api.post('/complaints/submit', {
-        title: 'Emergency: Urgent Incident Report',
-        category: 'Emergency',
-        district: emergencyForm.district,
-        location: 'Emergency Location Reported via Portal',
-        incidentDate: new Date().toISOString().split('T')[0],
-        incidentTime: new Date().toTimeString().split(' ')[0].substring(0, 5),
-        description: `[EMERGENCY REPORT - NIC: ${emergencyForm.nic.trim()} - Phone: ${emergencyForm.phone.trim()}] ${emergencyForm.details.trim()}`,
-        isAnonymous: false
+      const formData = new FormData();
+      formData.append('isEmergency', 'true');
+      formData.append('title', 'Emergency: Priority Incident Report');
+      formData.append('category', 'Emergency');
+      formData.append('district', district);
+      formData.append('town', town.trim());
+      formData.append('landmarkDescription', landmarkDescription.trim());
+      if (address.trim()) formData.append('address', address.trim());
+      if (additionalNotes.trim()) formData.append('additionalNotes', additionalNotes.trim());
+      if (nic.trim()) formData.append('nic', nic.trim());
+      if (phone.trim()) formData.append('phone', phone.trim());
+      formData.append('description', details.trim());
+      formData.append('incidentDate', new Date().toISOString().split('T')[0]);
+      formData.append('incidentTime', new Date().toTimeString().split(' ')[0].substring(0, 5));
+      formData.append('isAnonymous', 'false');
+
+      evidenceFiles.forEach((file) => {
+        formData.append('evidenceFiles', file);
       });
 
+      const res = await api.post('/complaints/submit', formData);
+
       if (res.ok) {
+        const generatedId = res.data?.complaintId || res.data?.complaint?.complaintId || 'Submitted';
         setEmergencyAlert({
           type: 'success',
-          message: `Emergency complaint recorded successfully! Reference ID: ${res.data?.complaintId || 'Submitted'}. Emergency teams notified.`
+          message: `Emergency complaint recorded successfully! Reference ID: ${generatedId}. Dispatch teams have been alerted.`
         });
-        setEmergencyForm({ details: '', nic: '', phone: '', district: '' });
-        setTimeout(() => setShowEmergencyModal(false), 2500);
+        setEmergencyForm({
+          details: '',
+          nic: '',
+          phone: '',
+          district: '',
+          town: '',
+          landmarkDescription: '',
+          address: '',
+          additionalNotes: ''
+        });
+        setEvidenceFiles([]);
+        setTimeout(() => setShowEmergencyModal(false), 3000);
       } else {
         setEmergencyAlert({
           type: 'danger',
-          message: res.data?.message || 'Emergency dispatch recording failed. Please call 911 or 100 directly.'
+          message: res.data?.message || 'Emergency dispatch recording failed. Please call 119 or 118 directly.'
         });
       }
     } catch {
       setEmergencyAlert({
         type: 'danger',
-        message: 'Network error. Please call 911 or 100 immediately for life-threatening emergencies.'
+        message: 'Network error. Please call 119 or 118 immediately for life-threatening emergencies.'
       });
     } finally {
       setIsSubmitting(false);
@@ -486,13 +597,17 @@ export default function Home() {
            EMERGENCY COMPLAINT MODAL
            ============================================================ */}
       {showEmergencyModal && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} role="dialog">
-          <div className="modal-dialog modal-dialog-centered modal-lg">
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.65)' }} role="dialog">
+          <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
             <div className="modal-content emergency-modal-card">
-              <div className="modal-header border-0 pb-0">
+              <div className="modal-header border-0 pb-3">
                 <div>
-                  <p className="emergency-modal-badge"><i className="bi bi-exclamation-triangle-fill me-2"></i>Urgent Report</p>
-                  <h5 className="modal-title" style={{ color: '#fff', fontWeight: 700 }}>Emergency Complaint</h5>
+                  <p className="emergency-modal-badge mb-1">
+                    <i className="bi bi-exclamation-triangle-fill me-2"></i>Priority Distress Dispatch
+                  </p>
+                  <h4 className="modal-title mb-0" style={{ color: '#fff', fontWeight: 700 }}>
+                    Emergency Incident Report
+                  </h4>
                 </div>
                 <button
                   type="button"
@@ -502,10 +617,13 @@ export default function Home() {
                 ></button>
               </div>
 
-              <div className="modal-body py-4">
-                <p className="emergency-modal-text">
-                  Use this form for immediate incidents. Share the situation clearly and provide your NIC and phone number so the dispatch team can contact you quickly.
-                </p>
+              <div className="modal-body py-4 px-4 px-md-5">
+                <div className="alert alert-danger bg-danger bg-opacity-10 border border-danger-subtle rounded-3 py-2 px-3 mb-4 d-flex align-items-center">
+                  <i className="bi bi-shield-exclamation text-danger fs-4 me-3 flex-shrink-0"></i>
+                  <span className="small text-danger fw-medium">
+                    This priority channel alerts rapid-response dispatchers. For active life-threatening danger, also call <strong>119</strong> or <strong>118</strong> immediately.
+                  </span>
+                </div>
 
                 {emergencyAlert && (
                   <ToastAlert
@@ -517,96 +635,227 @@ export default function Home() {
                 )}
 
                 <form onSubmit={handleEmergencySubmit} className="emergency-form">
-                  <div className="mb-3">
-                    <label className="form-label text-white small fw-semibold">Complaint Details <span className="text-danger">*</span></label>
-                    <textarea
-                      className="form-control"
-                      rows="4"
-                      placeholder="Describe the incident in detail..."
-                      value={emergencyForm.details}
-                      onChange={(e) => setEmergencyForm({ ...emergencyForm, details: e.target.value })}
-                      required
-                    ></textarea>
+                  {/* Location Information Group */}
+                  <div className="mb-4">
+                    <h6 className="fw-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
+                      <i className="bi bi-geo-alt-fill text-danger"></i>
+                      <span>Emergency Location Details</span>
+                    </h6>
+
+                    <div className="row g-3">
+                      <div className="col-md-6">
+                        <label className="form-label text-dark small fw-semibold">
+                          District <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          className="form-select"
+                          value={emergencyForm.district}
+                          onChange={(e) => setEmergencyForm({ ...emergencyForm, district: e.target.value })}
+                          required
+                        >
+                          <option value="" disabled>Select District</option>
+                          {SRI_LANKA_DISTRICTS.map((d) => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="col-md-6">
+                        <label className="form-label text-dark small fw-semibold">
+                          Town / City <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="e.g. Nugegoda, Negombo, Kaduwela"
+                          value={emergencyForm.town}
+                          onChange={(e) => setEmergencyForm({ ...emergencyForm, town: e.target.value })}
+                          required
+                        />
+                      </div>
+
+                      <div className="col-12">
+                        <label className="form-label text-dark small fw-semibold">
+                          Nearby Landmark / Location Description <span className="text-danger">*</span>
+                        </label>
+                        <textarea
+                          className="form-control"
+                          rows="2"
+                          placeholder="e.g. Near clock tower, behind central bus terminal, opposite supermarket"
+                          value={emergencyForm.landmarkDescription}
+                          onChange={(e) => setEmergencyForm({ ...emergencyForm, landmarkDescription: e.target.value })}
+                          required
+                        ></textarea>
+                      </div>
+
+                      <div className="col-md-6">
+                        <label className="form-label text-dark small fw-semibold">
+                          Street / Exact Address <span className="text-muted fw-normal">(Optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="e.g. No. 45, Temple Road"
+                          value={emergencyForm.address}
+                          onChange={(e) => setEmergencyForm({ ...emergencyForm, address: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="col-md-6">
+                        <label className="form-label text-dark small fw-semibold">
+                          Additional Location Notes <span className="text-muted fw-normal">(Optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="e.g. 2nd floor, blue iron gate, alley entrance"
+                          value={emergencyForm.additionalNotes}
+                          onChange={(e) => setEmergencyForm({ ...emergencyForm, additionalNotes: e.target.value })}
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="row g-3">
-                    <div className="col-md-6">
-                      <label className="form-label text-white small fw-semibold">NIC Number <span className="text-danger">*</span></label>
-                      <input
-                        type="text"
+                  {/* Incident Details */}
+                  <div className="mb-4">
+                    <h6 className="fw-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
+                      <i className="bi bi-file-earmark-text-fill text-danger"></i>
+                      <span>Incident Narrative</span>
+                    </h6>
+
+                    <div>
+                      <label className="form-label text-dark small fw-semibold">
+                        Emergency Situation Details <span className="text-danger">*</span>
+                      </label>
+                      <textarea
                         className="form-control"
-                        placeholder="e.g. 200012345678"
-                        value={emergencyForm.nic}
-                        onChange={(e) => setEmergencyForm({ ...emergencyForm, nic: e.target.value })}
+                        rows="3"
+                        placeholder="State clearly what is happening right now, any weapons observed, or individuals needing medical/police help..."
+                        value={emergencyForm.details}
+                        onChange={(e) => setEmergencyForm({ ...emergencyForm, details: e.target.value })}
                         required
-                      />
+                      ></textarea>
                     </div>
-                    <div className="col-md-6">
-                      <label className="form-label text-white small fw-semibold">Phone Number <span className="text-danger">*</span></label>
+                  </div>
+
+                  {/* Reporter Contact Information (Optional) */}
+                  <div className="mb-4">
+                    <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                      <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <i className="bi bi-person-badge-fill text-danger"></i>
+                        <span>Reporter Contact Information</span>
+                      </h6>
+                      <span className="badge bg-secondary bg-opacity-10 text-secondary border small">Strictly Optional</span>
+                    </div>
+
+                    <p className="text-muted small mb-3">
+                      Contact information is optional for emergency assistance. Providing a phone number enables dispatchers to call back for quick on-scene verification.
+                    </p>
+
+                    <div className="row g-3">
+                      <div className="col-md-6">
+                        <label className="form-label text-dark small fw-semibold">
+                          NIC / National ID <span className="text-muted fw-normal">(Optional)</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="e.g. 200012345678 or 987654321V"
+                          value={emergencyForm.nic}
+                          onChange={(e) => setEmergencyForm({ ...emergencyForm, nic: e.target.value })}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label text-dark small fw-semibold">
+                          Contact Phone Number <span className="text-muted fw-normal">(Optional)</span>
+                        </label>
+                        <input
+                          type="tel"
+                          className="form-control"
+                          placeholder="e.g. 0771234567"
+                          value={emergencyForm.phone}
+                          onChange={(e) => setEmergencyForm({ ...emergencyForm, phone: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Optional Supporting Evidence */}
+                  <div className="mb-4">
+                    <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                      <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <i className="bi bi-paperclip text-danger"></i>
+                        <span>Supporting Evidence</span>
+                      </h6>
+                      <span className="badge bg-secondary bg-opacity-10 text-secondary border small">Optional (Max 5 files)</span>
+                    </div>
+
+                    <div className="p-3 bg-light rounded-3 border">
+                      <label className="form-label text-dark small fw-semibold d-block">
+                        Upload Photos, Videos or Documents <span className="text-muted fw-normal">(JPG, PNG, PDF, MP4 up to 10MB)</span>
+                      </label>
                       <input
-                        type="tel"
+                        type="file"
                         className="form-control"
-                        placeholder="e.g. 0771234567"
-                        value={emergencyForm.phone}
-                        onChange={(e) => setEmergencyForm({ ...emergencyForm, phone: e.target.value })}
-                        required
+                        multiple
+                        accept=".jpg,.jpeg,.png,.pdf,.mp4"
+                        onChange={handleFileChange}
+                        disabled={evidenceFiles.length >= 5}
                       />
+
+                      {evidenceFiles.length > 0 && (
+                        <div className="mt-3 d-flex flex-wrap gap-2">
+                          {evidenceFiles.map((f, idx) => (
+                            <div
+                              key={idx}
+                              className="d-flex align-items-center bg-white border rounded-pill px-3 py-1 shadow-sm small text-dark"
+                            >
+                              <i className="bi bi-file-earmark-check-fill text-success me-2"></i>
+                              <span className="fw-semibold text-truncate me-2" style={{ maxWidth: '180px' }}>
+                                {f.name}
+                              </span>
+                              <span className="text-muted me-2 small">
+                                ({(f.size / (1024 * 1024)).toFixed(1)} MB)
+                              </span>
+                              <button
+                                type="button"
+                                className="btn-close"
+                                style={{ fontSize: '0.65rem' }}
+                                onClick={() => removeFile(idx)}
+                                aria-label="Remove file"
+                              ></button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="row g-3 mt-1">
-                    <div className="col-md-12">
-                      <label className="form-label text-white small fw-semibold">District <span className="text-danger">*</span></label>
-                      <select
-                        className="form-select"
-                        value={emergencyForm.district}
-                        onChange={(e) => setEmergencyForm({ ...emergencyForm, district: e.target.value })}
-                        required
-                      >
-                        <option value="" disabled>Select District</option>
-                        <option value="Colombo">Colombo</option>
-                        <option value="Gampaha">Gampaha</option>
-                        <option value="Kalutara">Kalutara</option>
-                        <option value="Kandy">Kandy</option>
-                        <option value="Matale">Matale</option>
-                        <option value="Nuwara Eliya">Nuwara Eliya</option>
-                        <option value="Galle">Galle</option>
-                        <option value="Matara">Matara</option>
-                        <option value="Hambantota">Hambantota</option>
-                        <option value="Jaffna">Jaffna</option>
-                        <option value="Kilinochchi">Kilinochchi</option>
-                        <option value="Mannar">Mannar</option>
-                        <option value="Vavuniya">Vavuniya</option>
-                        <option value="Mullaitivu">Mullaitivu</option>
-                        <option value="Batticaloa">Batticaloa</option>
-                        <option value="Ampara">Ampara</option>
-                        <option value="Trincomalee">Trincomalee</option>
-                        <option value="Kurunegala">Kurunegala</option>
-                        <option value="Puttalam">Puttalam</option>
-                        <option value="Anuradhapura">Anuradhapura</option>
-                        <option value="Polonnaruwa">Polonnaruwa</option>
-                        <option value="Badulla">Badulla</option>
-                        <option value="Monaragala">Monaragala</option>
-                        <option value="Ratnapura">Ratnapura</option>
-                        <option value="Kegalle">Kegalle</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="d-flex justify-content-end gap-2 mt-4">
+                  <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
                     <button
                       type="button"
                       className="btn btn-secondary px-4 rounded-3"
                       onClick={() => setShowEmergencyModal(false)}
+                      disabled={isSubmitting}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="btn btn-danger px-4 rounded-3 fw-semibold"
+                      className="btn btn-danger px-4 rounded-3 fw-semibold shadow-sm"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? 'Submitting Urgent Report...' : 'Submit Emergency Report'}
+                      {isSubmitting ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          Submitting Emergency Report...
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-send-fill me-2"></i>
+                          Submit Emergency Report
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
