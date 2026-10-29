@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get in touch with the Crime Investigation Website. Submit feedback, system inquiries, or view central office hours and emergency helpline numbers.">
+  <title>Contact Us - Crime Investigation Website</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Main Project Stylesheet -->
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- ============================================================
+       NAVIGATION BAR
+       ============================================================ -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html">
+        <img src="../images/logo.png" alt="Logo" class="brand-logo" style="height: 45px; margin-right: 10px;">
+        <span>CRIME INVESTIGATION<br><small style="font-weight:400;font-size:.78rem;opacity:.85;">WEBSITE</small></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+          <li class="nav-item"><a class="nav-link" href="../index.html"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="complaint.html"><i class="bi bi-file-earmark-text me-1"></i>File Complaint</a></li>
+          <li class="nav-item"><a class="nav-link" href="track.html"><i class="bi bi-search me-1"></i>Track Complaint</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html"><i class="bi bi-info-circle me-1"></i>About Us</a></li>
+          <li class="nav-item"><a class="nav-link active" href="contact.html"><i class="bi bi-telephone-fill me-1"></i>Contact</a></li>
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link nav-btn-login px-3" href="login.html"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO HEADER SECTION
+       ============================================================ -->
+  <header class="py-5 text-white" style="background: var(--hero-gradient); position: relative; overflow: hidden;">
+    <div class="container py-4 text-center position-relative" style="z-index: 2;">
+      <span class="badge mb-3 px-3 py-2 text-uppercase fw-bold text-white bg-danger" style="letter-spacing: 1.5px;">Support Center</span>
+      <h1 class="fw-bold display-5">Contact Support & Helpline</h1>
+      <p class="lead mx-auto text-white-50" style="max-width: 650px;">Have questions about filing a complaint or need system help? Send us a message or contact our round-the-clock emergency team.</p>
+    </div>
+    <!-- Decorative background elements -->
+    <div style="position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,0.03);"></div>
+    <div style="position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; border-radius: 50%; background: rgba(230,57,70,0.08);"></div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main class="container my-5 flex-grow-1">
+    <div class="row g-4">
+      
+      <!-- LEFT COLUMN: Contact Form -->
+      <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-4 p-sm-5 h-100">
+          <h3 class="fw-bold text-dark mb-2">Send Us a Message</h3>
+          <p class="text-muted small mb-4">Fill out the form below. Our support team typically replies to queries within 24 business hours.</p>
+
+          <div id="contactAlert" class="alert d-none mb-4" role="alert"></div>
+
+          <form id="contactForm" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <!-- Name -->
+              <div class="col-md-6">
+                <label for="contactName" class="form-label small fw-semibold">Your Full Name</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-person"></i></span>
+                  <input type="text" class="form-control bg-light border-start-0 ps-0" id="contactName" placeholder="e.g. John Doe" required minlength="3">
+                  <div class="invalid-feedback">Please enter your name (min 3 characters).</div>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="col-md-6">
+                <label for="contactEmail" class="form-label small fw-semibold">Email Address</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-envelope"></i></span>
+                  <input type="email" class="form-control bg-light border-start-0 ps-0" id="contactEmail" placeholder="e.g. john@example.com" required>
+                  <div class="invalid-feedback">Please enter a valid email address.</div>
+                </div>
+              </div>
+
+              <!-- Subject -->
+              <div class="col-12">
+                <label for="contactSubject" class="form-label small fw-semibold">Message Subject</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-bookmark"></i></span>
+                  <input type="text" class="form-control bg-light border-start-0 ps-0" id="contactSubject" placeholder="e.g. System Inquiry, Account Help" required minlength="4">
+                  <div class="invalid-feedback">Please specify the subject of your message.</div>
+                </div>
+              </div>
+
+              <!-- Message -->
+              <div class="col-12">
+                <label for="contactMessage" class="form-label small fw-semibold">Write Message Details</label>
+                <textarea class="form-control bg-light" id="contactMessage" rows="5" placeholder="Enter your detailed query here..." required minlength="10"></textarea>
+                <div class="invalid-feedback">Please write details of your query (min 10 characters).</div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="contactSubmitBtn" class="btn btn-primary px-5 py-2.5 fw-semibold mt-4 shadow-sm w-100 w-sm-auto" style="background: var(--primary); border: none;">
+              <i class="bi bi-send-fill me-2"></i>Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Contact info & emergency section -->
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-4 p-sm-5 h-100">
+          <h3 class="fw-bold text-dark mb-4">Official Information</h3>
+
+          <div class="d-flex flex-column gap-4">
+            <!-- Emergency Numbers -->
+            <div class="d-flex align-items-start gap-3 border-bottom pb-3">
+              <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-3"><i class="bi bi-telephone-fill fs-4"></i></div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Emergency Numbers</h6>
+                <p class="text-danger fw-bold mb-0">911 (Immediate Assistance)</p>
+                <span class="text-muted small">Hotline Support: 1-800-555-CRIME</span>
+              </div>
+            </div>
+
+            <!-- Office Address -->
+            <div class="d-flex align-items-start gap-3 border-bottom pb-3">
+              <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3"><i class="bi bi-geo-alt-fill fs-4"></i></div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Central Office Address</h6>
+                <address class="text-muted small mb-0" style="line-height: 1.6;">
+                  Public Safety Headquarters,<br>
+                  Sector 12, City Capital,<br>
+                  Building B, Suite 400
+                </address>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="d-flex align-items-start gap-3 border-bottom pb-3">
+              <div class="p-3 bg-info bg-opacity-10 text-info rounded-3"><i class="bi bi-envelope-at-fill fs-4"></i></div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Email Inquiries</h6>
+                <strong class="text-dark small d-block">support@ccms-portal.gov</strong>
+                <span class="text-muted small">info@ccms-registry.gov</span>
+              </div>
+            </div>
+
+            <!-- Working Hours -->
+            <div class="d-flex align-items-start gap-3">
+              <div class="p-3 bg-success bg-opacity-10 text-success rounded-3"><i class="bi bi-clock-fill fs-4"></i></div>
+              <div>
+                <h6 class="fw-bold text-dark mb-1">Working Hours</h6>
+                <p class="text-muted small mb-0">Monday – Friday: 09:00 AM – 05:00 PM</p>
+                <p class="text-muted small mb-0">Saturday: 09:00 AM – 01:00 PM</p>
+                <span class="badge bg-light text-dark border mt-1">Closed Sundays & Holidays</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="bg-dark text-white-50 text-center py-3 mt-auto">
+    <div class="container">
+      <small>&copy; 2025 Crime Investigation Website. All Rights Reserved. | Educational Student Project</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Contact Logic JS -->
+  <script src="../js/contact.js"></script>
+<script src="../js/transition.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="System settings and configurations for Crime Investigation Website Admin.">
+  <title>System Settings - Admin CIW</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Main Project Stylesheet -->
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body class="bg-light">
+
+  <div class="admin-container">
+
+    <!-- ============================================================
+         SIDEBAR MENU
+         ============================================================ -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <a class="navbar-brand text-decoration-none d-flex align-items-center gap-2" href="../../index.html">
+          <img src="../../images/logo.png" alt="Logo" style="height: 35px;">
+          <div class="text-white">
+            <h6 class="mb-0 fw-bold">CIW Admin</h6>
+            <small class="text-white-50" style="font-size: 0.72rem;">Control Panel</small>
+          </div>
+        </a>
+      </div>
+
+      <!-- Menu Items -->
+      <ul class="admin-sidebar-menu">
+        <li>
+          <a href="../admin_dashboard.html" class="admin-sidebar-link">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="complaints.html" class="admin-sidebar-link">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <span>Complaints</span>
+          </a>
+        </li>
+        <li>
+          <a href="users.html" class="admin-sidebar-link">
+            <i class="bi bi-people-fill"></i>
+            <span>Users</span>
+          </a>
+        </li>
+        <li>
+          <a href="contact_inquiries.html" class="admin-sidebar-link">
+            <i class="bi bi-envelope-paper-fill"></i>
+            <span>Inquiries</span>
+          </a>
+        </li>
+        <li>
+          <a href="reports.html" class="admin-sidebar-link">
+            <i class="bi bi-bar-chart-line-fill"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="settings.html" class="admin-sidebar-link active">
+            <i class="bi bi-gear-fill"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Footer / Sign Out -->
+      <div class="admin-sidebar-footer">
+        <a href="../../index.html" class="admin-sidebar-link text-danger">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT AREA
+         ============================================================ -->
+    <main class="admin-content">
+
+      <!-- Header Block -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom g-3">
+        <div>
+          <h2 class="fw-bold text-dark mb-1">Administrative System Configurations</h2>
+          <p class="text-muted mb-0 small">Manage department settings, notification email triggers, and system credentials.</p>
+        </div>
+      </div>
+
+      <!-- Settings Card Layout -->
+      <div class="row g-4">
+        <!-- Main Form Column -->
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-4 p-sm-5">
+            <h5 class="fw-bold text-dark mb-4"><i class="bi bi-sliders text-primary me-2"></i>General Station Parameters</h5>
+            
+            <form id="settingsForm">
+              <div class="row g-3">
+                <!-- Dept Name -->
+                <div class="col-md-6">
+                  <label for="deptName" class="form-label small fw-semibold">Department / Station Name</label>
+                  <input type="text" class="form-control bg-light" id="deptName" value="Central Police Precinct 1" required>
+                </div>
+                <!-- Station Code -->
+                <div class="col-md-6">
+                  <label for="stationCode" class="form-label small fw-semibold">Station Precinct Code</label>
+                  <input type="text" class="form-control bg-light" id="stationCode" value="CPP1-099" required>
+                </div>
+
+                <!-- Officer Email -->
+                <div class="col-md-12">
+                  <label for="adminEmail" class="form-label small fw-semibold">Central Admin Email Address</label>
+                  <input type="email" class="form-control bg-light" id="adminEmail" value="station-admin@precinct1.gov" required>
+                </div>
+
+                <!-- Triage Dispatch Time limit -->
+                <div class="col-md-6">
+                  <label for="triageLimit" class="form-label small fw-semibold">Triage Notice Warning Limit</label>
+                  <select class="form-select bg-light" id="triageLimit">
+                    <option value="2">2 Hours</option>
+                    <option value="4" selected>4 Hours</option>
+                    <option value="8">8 Hours</option>
+                    <option value="24">24 Hours</option>
+                  </select>
+                </div>
+
+                <!-- Max evidence upload -->
+                <div class="col-md-6">
+                  <label for="maxUploadSize" class="form-label small fw-semibold">Maximum File Size Upload</label>
+                  <select class="form-select bg-light" id="maxUploadSize">
+                    <option value="5">5 MB</option>
+                    <option value="10" selected>10 MB</option>
+                    <option value="25">25 MB</option>
+                    <option value="50">50 MB</option>
+                  </select>
+                </div>
+
+                <!-- Checkbox toggles -->
+                <div class="col-12 mt-4">
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="autoDispatch" checked>
+                    <label class="form-check-label small text-muted" for="autoDispatch">
+                      Enable automatic officer email notifications upon complaint routing
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="anonymityProtection" checked>
+                    <label class="form-check-label small text-muted" for="anonymityProtection">
+                      Enforce system-wide IP scrubbers for anonymous complaints
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary px-5 py-2.5 mt-4 fw-semibold shadow-sm" style="background: var(--primary); border: none;">
+                <i class="bi bi-save2-fill me-2"></i>Save Configuration
+              </button>
+            </form>
+          </div>
+          
+          <!-- CREDENTIAL SETTINGS CARD -->
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-4 p-sm-5 mt-4">
+            <h5 class="fw-bold text-dark mb-4"><i class="bi bi-shield-lock-fill text-danger me-2"></i>Update Admin Credentials</h5>
+            
+            <div id="settingsErrorMsg" class="alert alert-danger d-none small py-2 mb-3 fw-bold" role="alert"></div>
+            <div id="settingsSuccessMsg" class="alert alert-success d-none small py-2 mb-3 fw-bold" role="alert"></div>
+            
+            <form id="credentialsForm" class="needs-validation" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="adminFullName" class="form-label small fw-semibold">Admin Full Name</label>
+                  <input type="text" class="form-control bg-light" id="adminFullName" required minlength="3">
+                </div>
+                <div class="col-md-6">
+                  <label for="adminPhone" class="form-label small fw-semibold">Admin Phone Number</label>
+                  <input type="text" class="form-control bg-light" id="adminPhone" required minlength="10">
+                </div>
+                <div class="col-md-6">
+                  <label for="adminOldPassword" class="form-label small fw-semibold">Current Password</label>
+                  <input type="password" class="form-control bg-light" id="adminOldPassword" placeholder="Required to change password">
+                </div>
+                <div class="col-md-6">
+                  <label for="adminNewPassword" class="form-label small fw-semibold">New Password</label>
+                  <input type="password" class="form-control bg-light" id="adminNewPassword" placeholder="Leave blank to keep current">
+                </div>
+              </div>
+              <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm" style="background: var(--primary); border: none;">Save Credentials</button>
+              </div>
+            </form>
+          </div>
+          <!-- END CREDENTIAL SETTINGS CARD -->
+          
+        </div>
+
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Page Logic -->
+  <script src="../../js/admin_settings.js"></script>
+<script src="../../js/transition.js"></script>
+</body>
+</html>

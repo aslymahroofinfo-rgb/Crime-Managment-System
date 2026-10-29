@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Crime Investigation Website – Report crime safely, track complaints, and help build a safer community." />
+  <title>Crime Investigation Website</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION BAR
+     Sticky top navbar with brand logo + nav links
+     ============================================================ -->
+<nav class="navbar navbar-expand-lg" id="mainNav">
+  <div class="container">
+
+    <!-- Brand / Logo -->
+    <a class="navbar-brand" href="index.html">
+      <img src="./images/logo.png" alt="Logo" class="brand-logo" style="height: 45px; margin-right: 10px;">
+      <span>CRIME INVESTIGATION<br><small style="font-weight:400;font-size:.78rem;opacity:.85;">WEBSITE</small></span>
+    </a>
+
+    <!-- Mobile hamburger toggle -->
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarMenu"
+            aria-controls="navbarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav Links -->
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="pages/complaint.html"><i class="bi bi-file-earmark-text me-1"></i>File Complaint</a></li>
+        <li class="nav-item"><a class="nav-link" href="pages/track.html"><i class="bi bi-search me-1"></i>Track Complaint</a></li>
+        <li class="nav-item"><a class="nav-link" href="pages/about.html"><i class="bi bi-info-circle me-1"></i>About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="pages/contact.html"><i class="bi bi-telephone-fill me-1"></i>Contact</a></li>
+        <li class="nav-item ms-lg-1">
+          <a class="nav-link nav-btn-login px-3" href="pages/login.html"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+        </li>
+        <li class="nav-item ms-lg-1">
+          <a class="nav-link nav-btn-register px-3" href="pages/register.html"><i class="bi bi-person-plus-fill me-1"></i>Register</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- End Navbar -->
+
+
+<!-- ============================================================
+     HERO SECTION
+     Full-width banner with heading, subtitle, and CTA buttons
+     ============================================================ -->
+<section class="hero-section" id="home">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <!-- Left: Text content -->
+      <div class="col-lg-7">
+        <span class="hero-badge"><i class="bi bi-shield-lock me-1"></i>Official Complaint Portal</span>
+        <h1 class="hero-title">Report Crime <span>Safely</span> and <span>Securely</span></h1>
+        <p class="hero-subtitle">Submit complaints online, track case progress, and help build a safer community. Your voice matters — report incidents anytime, anywhere.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="pages/complaint.html" class="btn-hero-primary"><i class="bi bi-file-earmark-plus me-2"></i>File Complaint</a>
+          <a href="pages/track.html" class="btn-hero-outline"><i class="bi bi-search me-2"></i>Track Complaint</a>
+          <button type="button" class="btn-hero-emergency" data-emergency-open="true"><i class="bi bi-exclamation-triangle-fill me-2"></i>Emergency Complaint</button>
+        </div>
+        <!-- Mini stats strip -->
+        <div class="hero-stats">
+          <div class="hero-stat-item">
+            <span class="hero-stat-number">12,500+</span>
+            <span class="hero-stat-label">Complaints Filed</span>
+          </div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-number">8,900+</span>
+            <span class="hero-stat-label">Cases Resolved</span>
+          </div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-number">50,000+</span>
+            <span class="hero-stat-label">Registered Users</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Visual panel -->
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-visual">
+          <i class="bi bi-shield-fill-check"></i>
+          <h4 style="color:#fff;font-weight:700;margin-bottom:10px;">Secure & Confidential</h4>
+          <p>Your complaint data is encrypted and handled with strict confidentiality by trained law enforcement officers.</p>
+          <div class="mt-3 d-flex justify-content-center gap-3 flex-wrap">
+            <span class="badge" style="background:rgba(255,255,255,.15);font-size:.8rem;padding:8px 14px;border-radius:20px;"><i class="bi bi-lock-fill me-1"></i>Encrypted</span>
+            <span class="badge" style="background:rgba(255,255,255,.15);font-size:.8rem;padding:8px 14px;border-radius:20px;"><i class="bi bi-eye-slash-fill me-1"></i>Anonymous</span>
+            <span class="badge" style="background:rgba(255,255,255,.15);font-size:.8rem;padding:8px 14px;border-radius:20px;"><i class="bi bi-clock-fill me-1"></i>24/7 Active</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- End Hero -->
+
+
+<!-- ============================================================
+     FEATURES SECTION
+     Bootstrap cards showcasing system capabilities
+     ============================================================ -->
+<section class="features-section" id="features">
+  <div class="container">
+
+    <!-- Section Heading -->
+    <div class="section-heading">
+      <span class="section-badge">What We Offer</span>
+      <h2>System Features</h2>
+      <p>A comprehensive platform designed to make crime reporting simple, transparent, and effective.</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- Feature Cards Grid -->
+    <div class="row g-4">
+
+      <!-- Card 1: File Complaint -->
+      <div class="col-sm-6 col-lg-4">
+        <a href="pages/complaint.html" class="text-decoration-none text-dark d-block h-100">
+          <div class="feature-card">
+            <div class="feature-icon-wrap icon-blue"><i class="bi bi-file-earmark-text-fill"></i></div>
+            <h5>File Crime Complaint</h5>
+            <p>Submit detailed crime complaints online 24/7. Our guided form ensures all necessary information is captured accurately.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Card 2: Track Status -->
+      <div class="col-sm-6 col-lg-4">
+        <a href="pages/track.html" class="text-decoration-none text-dark d-block h-100">
+          <div class="feature-card">
+            <div class="feature-icon-wrap icon-green"><i class="bi bi-graph-up-arrow"></i></div>
+            <h5>Track Complaint Status</h5>
+            <p>Monitor your case in real-time. Get live updates on investigation progress directly from the assigned officer.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Card 3: Upload Evidence -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon-wrap icon-purple"><i class="bi bi-cloud-upload-fill"></i></div>
+          <h5>Upload Evidence</h5>
+          <p>Attach photos, videos, and documents as supporting evidence to strengthen your complaint and aid investigation.</p>
+        </div>
+      </div>
+
+      <!-- Card 4: Anonymous Reporting -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon-wrap icon-orange"><i class="bi bi-person-fill-slash"></i></div>
+          <h5>Anonymous Reporting</h5>
+          <p>Report suspicious activities without revealing your identity. Your safety is our top priority at all times.</p>
+        </div>
+      </div>
+
+      <!-- Card 5: Police Verification -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon-wrap icon-red"><i class="bi bi-patch-check-fill"></i></div>
+          <h5>Police Verification</h5>
+          <p>All complaints are reviewed and verified by certified law enforcement officers ensuring legitimate action is taken.</p>
+        </div>
+      </div>
+
+      <!-- Card 6: Secure Data -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="feature-card">
+          <div class="feature-icon-wrap icon-teal"><i class="bi bi-database-lock-fill"></i></div>
+          <h5>Secure Data Management</h5>
+          <p>End-to-end encryption protects your personal data. Compliant with government data protection standards.</p>
+        </div>
+      </div>
+
+    </div><!-- End Row -->
+  </div>
+</section>
+<!-- End Features -->
+
+
+<!-- ============================================================
+     EMERGENCY CONTACTS SECTION
+     Helpline cards with contact numbers and call buttons
+     ============================================================ -->
+<section class="emergency-section" id="emergency">
+  <div class="container">
+
+    <div class="section-heading">
+      <span class="section-badge">Helplines</span>
+      <h2>Emergency Contacts</h2>
+      <p>Reach the right authority instantly. Save these numbers for emergencies.</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Police Emergency -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon text-primary"><i class="bi bi-shield-fill-check"></i></div>
+          <h6>Police Emergency</h6>
+          <span class="emergency-number">100</span>
+          <a href="tel:100" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+      <!-- Women's Safety -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon" style="color:#d63384;"><i class="bi bi-gender-female"></i></div>
+          <h6>Women's Safety Helpline</h6>
+          <span class="emergency-number">1091</span>
+          <a href="tel:1091" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+      <!-- Child Protection -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon" style="color:#fd7e14;"><i class="bi bi-person-hearts"></i></div>
+          <h6>Child Protection</h6>
+          <span class="emergency-number">1098</span>
+          <a href="tel:1098" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+      <!-- Ambulance -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon" style="color:#198754;"><i class="bi bi-heart-pulse-fill"></i></div>
+          <h6>Ambulance Service</h6>
+          <span class="emergency-number">108</span>
+          <a href="tel:108" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+      <!-- Fire & Rescue -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon" style="color:#dc3545;"><i class="bi bi-fire"></i></div>
+          <h6>Fire & Rescue</h6>
+          <span class="emergency-number">101</span>
+          <a href="tel:101" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+      <!-- Cyber Crime -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon" style="color:#6f42c1;"><i class="bi bi-laptop-fill"></i></div>
+          <h6>Cyber Crime Helpline</h6>
+          <span class="emergency-number">1930</span>
+          <a href="tel:1930" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+      <!-- Domestic Violence -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon" style="color:#e07b2a;"><i class="bi bi-house-exclamation-fill"></i></div>
+          <h6>Domestic Violence</h6>
+          <span class="emergency-number">181</span>
+          <a href="tel:181" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+      <!-- Senior Citizen -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="emergency-card">
+          <div class="emergency-icon" style="color:#20b2aa;"><i class="bi bi-person-cane"></i></div>
+          <h6>Senior Citizen Helpline</h6>
+          <span class="emergency-number">14567</span>
+          <a href="tel:14567" class="btn-call"><i class="bi bi-telephone-fill"></i> Call Now</a>
+        </div>
+      </div>
+
+    </div><!-- End Row -->
+  </div>
+</section>
+<!-- End Emergency -->
+
+
+<!-- ============================================================
+     HOW IT WORKS SECTION
+     4-step process guide on dark background
+     ============================================================ -->
+<section class="how-section" id="howItWorks">
+  <div class="container">
+
+    <div class="section-heading">
+      <span class="section-badge">Simple Process</span>
+      <h2>How It Works</h2>
+      <p>File and track your complaint in just 4 easy steps.</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="row justify-content-center align-items-center g-0 mt-2">
+
+      <!-- Step 1 -->
+      <div class="col-6 col-md-3">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h5>Register Account</h5>
+          <p>Create a free account with your valid ID and contact details to get started.</p>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="col d-none d-md-flex step-arrow"><i class="bi bi-arrow-right"></i></div>
+
+      <!-- Step 2 -->
+      <div class="col-6 col-md-3">
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h5>Submit Complaint</h5>
+          <p>Fill the complaint form with incident details and upload supporting evidence.</p>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="col d-none d-md-flex step-arrow"><i class="bi bi-arrow-right"></i></div>
+
+      <!-- Step 3 -->
+      <div class="col-6 col-md-3">
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h5>Police Review</h5>
+          <p>Law enforcement reviews your complaint, assigns an officer, and begins investigation.</p>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="col d-none d-md-flex step-arrow"><i class="bi bi-arrow-right"></i></div>
+
+      <!-- Step 4 -->
+      <div class="col-6 col-md-3">
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h5>Track Status</h5>
+          <p>Monitor case progress live. Receive notifications on every update until resolution.</p>
+        </div>
+      </div>
+
+    </div><!-- End Row -->
+  </div>
+</section>
+<!-- End How It Works -->
+
+
+<!-- ============================================================
+     STATISTICS SECTION
+     Animated counters displaying system metrics
+     ============================================================ -->
+<section class="stats-section" id="statsSection">
+  <div class="container">
+
+    <div class="section-heading">
+      <span class="section-badge">Our Impact</span>
+      <h2>System Statistics</h2>
+      <p>Real numbers reflecting our commitment to public safety.</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Complaints Submitted -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
+          <!-- data-target is the final number; data-suffix adds "+" -->
+          <span class="stat-number" data-target="12547" data-suffix="+">0</span>
+          <span class="stat-label">Complaints Submitted</span>
+        </div>
+      </div>
+
+      <!-- Cases Resolved -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="color:#198754;"><i class="bi bi-check-circle-fill"></i></div>
+          <span class="stat-number" data-target="8934" data-suffix="+">0</span>
+          <span class="stat-label">Cases Resolved</span>
+        </div>
+      </div>
+
+      <!-- Active Investigations -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="color:#fd7e14;"><i class="bi bi-hourglass-split"></i></div>
+          <span class="stat-number" data-target="3613" data-suffix="">0</span>
+          <span class="stat-label">Active Investigations</span>
+        </div>
+      </div>
+
+      <!-- Registered Users -->
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="color:#6f42c1;"><i class="bi bi-people-fill"></i></div>
+          <span class="stat-number" data-target="50000" data-suffix="+">0</span>
+          <span class="stat-label">Registered Users</span>
+        </div>
+      </div>
+
+    </div><!-- End Row -->
+  </div>
+</section>
+<!-- End Statistics -->
+
+
+<!-- ============================================================
+     PUBLIC AWARENESS SECTION
+     Safety tips displayed as icon + text cards
+     ============================================================ -->
+<section class="awareness-section" id="awareness">
+  <div class="container">
+
+    <div class="section-heading">
+      <span class="section-badge">Stay Safe</span>
+      <h2>Public Awareness & Safety Tips</h2>
+      <p>Follow these essential safety practices to protect yourself and your community.</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Tip 1 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="awareness-card">
+          <div class="awareness-icon"><i class="bi bi-shield-lock-fill"></i></div>
+          <div>
+            <h6>Never Share OTPs</h6>
+            <p>No bank, government agency, or officer will ever ask for your OTP. Keep it strictly private.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tip 2 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="awareness-card">
+          <div class="awareness-icon"><i class="bi bi-eye-fill"></i></div>
+          <div>
+            <h6>Report Suspicious Activity</h6>
+            <p>If you notice something unusual in your area, report it immediately to local authorities.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tip 3 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="awareness-card">
+          <div class="awareness-icon"><i class="bi bi-person-fill-lock"></i></div>
+          <div>
+            <h6>Protect Personal Info</h6>
+            <p>Avoid sharing Aadhaar, PAN, or bank details with unknown callers or websites.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tip 4 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="awareness-card">
+          <div class="awareness-icon"><i class="bi bi-credit-card-2-front-fill"></i></div>
+          <div>
+            <h6>Verify Online Transactions</h6>
+            <p>Always verify the seller's identity before making any online payment or transfer.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- End Row -->
+  </div>
+</section>
+<!-- End Awareness -->
+
+
+<!-- ============================================================
+     EMERGENCY COMPLAINT MODAL
+     Beautiful modal for urgent complaint submission
+     ============================================================ -->
+<div class="modal fade" id="emergencyComplaintModal" tabindex="-1" aria-labelledby="emergencyComplaintModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content emergency-modal-card">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <p class="emergency-modal-badge"><i class="bi bi-exclamation-triangle-fill me-2"></i>Urgent Report</p>
+          <h5 class="modal-title" id="emergencyComplaintModalLabel">Emergency Complaint</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <p class="emergency-modal-text">Use this form for immediate incidents. Share the situation clearly and provide your NIC and phone number so the team can contact you quickly.</p>
+        <form id="emergencyComplaintForm" class="emergency-form">
+          <div class="mb-3">
+            <label for="emergencyDetails" class="form-label">Complaint Details <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="emergencyDetails" rows="4" placeholder="Describe the incident in detail..." required></textarea>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="emergencyNic" class="form-label">NIC Number <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="emergencyNic" placeholder="e.g. 200012345678" required>
+            </div>
+            <div class="col-md-6">
+              <label for="emergencyPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+              <input type="tel" class="form-control" id="emergencyPhone" placeholder="e.g. 0771234567" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <label for="emergencyDistrict" class="form-label">District <span class="text-danger">*</span></label>
+              <select class="form-select" id="emergencyDistrict" required>
+                <option value="" selected disabled>Select District</option>
+                <option value="Colombo">Colombo</option>
+                <option value="Gampaha">Gampaha</option>
+                <option value="Kalutara">Kalutara</option>
+                <option value="Kandy">Kandy</option>
+                <option value="Matale">Matale</option>
+                <option value="Nuwara Eliya">Nuwara Eliya</option>
+                <option value="Galle">Galle</option>
+                <option value="Matara">Matara</option>
+                <option value="Hambantota">Hambantota</option>
+                <option value="Jaffna">Jaffna</option>
+                <option value="Kilinochchi">Kilinochchi</option>
+                <option value="Mannar">Mannar</option>
+                <option value="Vavuniya">Vavuniya</option>
+                <option value="Mullaitivu">Mullaitivu</option>
+                <option value="Batticaloa">Batticaloa</option>
+                <option value="Ampara">Ampara</option>
+                <option value="Trincomalee">Trincomalee</option>
+                <option value="Kurunegala">Kurunegala</option>
+                <option value="Puttalam">Puttalam</option>
+                <option value="Anuradhapura">Anuradhapura</option>
+                <option value="Polonnaruwa">Polonnaruwa</option>
+                <option value="Badulla">Badulla</option>
+                <option value="Monaragala">Monaragala</option>
+                <option value="Ratnapura">Ratnapura</option>
+                <option value="Kegalle">Kegalle</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="emergencyLocation" class="form-label">Location <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="emergencyLocation" placeholder="Nearest area or landmark" required>
+            </div>
+            <div class="col-md-6">
+              <label for="emergencyUrgency" class="form-label">Urgency (Optional)</label>
+              <select class="form-select" id="emergencyUrgency">
+                <option value="">Select urgency</option>
+                <option value="Immediate">Immediate</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div id="emergencyFormStatus" class="emergency-form-status" aria-live="polite"></div>
+            <button type="submit" class="btn btn-danger px-4"><i class="bi bi-send-fill me-2"></i>Submit Emergency Report</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     Quick links, contacts, project info, and copyright
+     ============================================================ -->
+<footer class="footer" id="footer">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- About Project -->
+      <div class="col-md-4">
+        <div class="footer-brand">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <img src="./images/logo.png" alt="Logo" style="height: 35px;">
+            <h5 class="mb-0">CIW</h5>
+          </div>
+          <p>Crime Investigation Website is a student project designed to demonstrate a digital platform for safe, transparent, and efficient crime reporting and case tracking.</p>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-6 col-md-2">
+        <h6>Quick Links</h6>
+        <ul>
+          <li><a href="index.html"><i class="bi bi-chevron-right"></i>Home</a></li>
+          <li><a href="pages/complaint.html"><i class="bi bi-chevron-right"></i>File Complaint</a></li>
+          <li><a href="pages/track.html"><i class="bi bi-chevron-right"></i>Track Complaint</a></li>
+          <li><a href="pages/about.html"><i class="bi bi-chevron-right"></i>About Us</a></li>
+          <li><a href="pages/contact.html"><i class="bi bi-chevron-right"></i>Contact</a></li>
+          <li><a href="pages/login.html"><i class="bi bi-chevron-right"></i>Login</a></li>
+          <li><a href="pages/register.html"><i class="bi bi-chevron-right"></i>Register</a></li>
+        </ul>
+      </div>
+
+      <!-- Emergency Contacts (footer) -->
+      <div class="col-6 col-md-3">
+        <h6>Emergency Numbers</h6>
+        <ul class="footer-contact">
+          <li><i class="bi bi-telephone-fill"></i>Police Emergency – <strong style="color:#fff;">100</strong></li>
+          <li><i class="bi bi-telephone-fill"></i>Women's Helpline – <strong style="color:#fff;">1091</strong></li>
+          <li><i class="bi bi-telephone-fill"></i>Ambulance – <strong style="color:#fff;">108</strong></li>
+          <li><i class="bi bi-telephone-fill"></i>Cyber Crime – <strong style="color:#fff;">1930</strong></li>
+          <li><i class="bi bi-telephone-fill"></i>Fire & Rescue – <strong style="color:#fff;">101</strong></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-md-3">
+        <h6>About Project</h6>
+        <ul class="footer-contact">
+          <li><i class="bi bi-mortarboard-fill"></i>Student Academic Project</li>
+          <li><i class="bi bi-code-slash"></i>HTML, CSS, Bootstrap 5, JS</li>
+          <li><i class="bi bi-envelope-fill"></i>contact@ccms.edu.in</li>
+          <li><i class="bi bi-globe"></i>www.ccms.edu.in</li>
+        </ul>
+      </div>
+
+    </div><!-- End Row -->
+  </div>
+
+  <!-- Copyright bar -->
+  <div class="footer-bottom">
+    <div class="container">
+      <p class="mb-0">
+        &copy; 2025 Crime Investigation Website. All Rights Reserved.
+        &nbsp;|&nbsp; Designed for Educational Purpose Only.
+      </p>
+    </div>
+  </div>
+</footer>
+<!-- End Footer -->
+
+
+<!-- ============================================================
+     SCROLL TO TOP BUTTON
+     Floating button that appears on scroll
+     ============================================================ -->
+<button id="scrollTopBtn" title="Back to Top" aria-label="Scroll to top">
+  <i class="bi bi-arrow-up"></i>
+</button>
+
+
+<!-- Bootstrap 5 JS Bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JavaScript -->
+<script src="js/main.js"></script>
+
+<script src="js/transition.js"></script>
+</body>
+</html>

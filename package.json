@@ -1,0 +1,16 @@
+{
+  "name": "crime-complaint-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Crime Investigation & Complaint Management System (CIW) - MERN Stack",
+  "scripts": {
+    "dev": "concurrently -n \"backend,client\" -c \"blue,green\" \"npm --prefix backend run dev\" \"npm --prefix client run dev\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "test": "node tests/final_e2e.js"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}

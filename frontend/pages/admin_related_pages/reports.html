@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Operational Reports and Analytics for Crime Investigation Website Admin.">
+  <title>Analytics Reports - Admin CIW</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Main Project Stylesheet -->
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body class="bg-light">
+
+  <div class="admin-container">
+
+    <!-- ============================================================
+         SIDEBAR MENU
+         ============================================================ -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <a class="navbar-brand text-decoration-none d-flex align-items-center gap-2" href="../../index.html">
+          <img src="../../images/logo.png" alt="Logo" style="height: 35px;">
+          <div class="text-white">
+            <h6 class="mb-0 fw-bold">CIW Admin</h6>
+            <small class="text-white-50" style="font-size: 0.72rem;">Control Panel</small>
+          </div>
+        </a>
+      </div>
+
+      <!-- Menu Items -->
+      <ul class="admin-sidebar-menu">
+        <li>
+          <a href="../admin_dashboard.html" class="admin-sidebar-link">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="complaints.html" class="admin-sidebar-link">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <span>Complaints</span>
+          </a>
+        </li>
+        <li>
+          <a href="users.html" class="admin-sidebar-link">
+            <i class="bi bi-people-fill"></i>
+            <span>Users</span>
+          </a>
+        </li>
+        <li>
+          <a href="contact_inquiries.html" class="admin-sidebar-link">
+            <i class="bi bi-envelope-paper-fill"></i>
+            <span>Inquiries</span>
+          </a>
+        </li>
+        <li>
+          <a href="reports.html" class="admin-sidebar-link active">
+            <i class="bi bi-bar-chart-line-fill"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="settings.html" class="admin-sidebar-link">
+            <i class="bi bi-gear-fill"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Footer / Sign Out -->
+      <div class="admin-sidebar-footer">
+        <a href="../../index.html" class="admin-sidebar-link text-danger">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT AREA
+         ============================================================ -->
+    <main class="admin-content">
+
+      <!-- Header Block -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom g-3">
+        <div>
+          <h2 class="fw-bold text-dark mb-1">System Operational Analytics</h2>
+          <p class="text-muted mb-0 small">Overview of complaints metrics, category breakdown charts, and performance ratios.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary btn-sm fw-semibold shadow-sm" style="background: var(--primary); border: none;" onclick="window.print()">
+            <i class="bi bi-printer-fill me-2"></i>Export PDF Report
+          </button>
+        </div>
+      </div>
+
+      <!-- Overview stats cards -->
+      <div class="row g-4 mb-4">
+        <!-- Resolution Ratio Card -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-4 h-100 text-center">
+            <span class="text-muted small fw-bold uppercase">Case Resolution Rate</span>
+            <div class="my-3">
+              <span class="display-4 fw-bold text-success">82%</span>
+            </div>
+            <div class="progress mb-2" style="height: 8px;">
+              <div class="progress-bar bg-success" role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <span class="text-muted small mt-1">Concluded vs Pending ratio</span>
+          </div>
+        </div>
+
+        <!-- Weekly Intake Card -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-4 h-100 text-center">
+            <span class="text-muted small fw-bold uppercase">Weekly Incident Intake</span>
+            <div class="my-3">
+              <span class="display-4 fw-bold text-primary">14</span>
+            </div>
+            <div class="progress mb-2" style="height: 8px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <span class="text-muted small mt-1">-5% lower than previous week</span>
+          </div>
+        </div>
+
+        <!-- Average Response Time -->
+        <div class="col-lg-4">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-4 h-100 text-center">
+            <span class="text-muted small fw-bold uppercase">Average Officer Triage</span>
+            <div class="my-3">
+              <span class="display-4 fw-bold text-warning">2.4 Hrs</span>
+            </div>
+            <div class="progress mb-2" style="height: 8px;">
+              <div class="progress-bar bg-warning" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <span class="text-muted small mt-1">From submit notification to assignment</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories & Incident Distribution Progress Bars -->
+      <div class="row g-4">
+        <!-- Distribution by Category -->
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-4 h-100">
+            <h5 class="fw-bold text-dark mb-4"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Cases by Incident Category</h5>
+            
+            <div class="d-flex flex-column gap-3">
+              <!-- Category 1 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>Theft & Burglary</span>
+                  <strong>35% (12 Cases)</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar" role="progressbar" style="width: 35%; background: var(--primary);" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <!-- Category 2 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>Cyber Crime</span>
+                  <strong>25% (9 Cases)</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <!-- Category 3 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>Assault / Altercation</span>
+                  <strong>20% (7 Cases)</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar bg-warning text-dark" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <!-- Category 4 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>Fraud / Scam</span>
+                  <strong>15% (5 Cases)</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar bg-danger" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <!-- Category 5 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>Other / Vandalism</span>
+                  <strong>5% (2 Cases)</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar bg-secondary" role="progressbar" style="width: 5%" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Resolution Performance -->
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-4 h-100">
+            <h5 class="fw-bold text-dark mb-4"><i class="bi bi-calendar3-event-fill text-danger me-2"></i>Monthly Resolution Targets</h5>
+            
+            <div class="d-flex flex-column gap-3">
+              <!-- Month 1 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>June 2026 (Current)</span>
+                  <strong class="text-success"><i class="bi bi-caret-up-fill me-1"></i>88% Resolved</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 88%" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <!-- Month 2 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>May 2026</span>
+                  <strong class="text-success"><i class="bi bi-caret-up-fill me-1"></i>80% Resolved</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <!-- Month 3 -->
+              <div>
+                <div class="d-flex justify-content-between mb-1 small text-dark">
+                  <span>April 2026</span>
+                  <strong class="text-warning"><i class="bi bi-caret-down-fill me-1"></i>72% Resolved</strong>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../js/transition.js"></script>
+</body>
+</html>

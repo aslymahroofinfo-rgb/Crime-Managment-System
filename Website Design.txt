@@ -1,0 +1,9 @@
+Website Design
+
+OTP option want to give 
+if any changes made want to confime by OTP
+if any complain filed message want to send to email
+easy compalin filing method want to input
+make if case is done want to give message to user by a email or sms after the make changes
+admin users adding in the main admin panel
+disctrict wise user name 

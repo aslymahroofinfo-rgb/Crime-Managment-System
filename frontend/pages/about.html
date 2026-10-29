@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn more about our mission, vision, objectives, and benefits for citizens using the Crime Investigation Website.">
+  <title>About Us - Crime Investigation Website</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Main Project Stylesheet -->
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- ============================================================
+       NAVIGATION BAR
+       ============================================================ -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html">
+        <img src="../images/logo.png" alt="Logo" class="brand-logo" style="height: 45px; margin-right: 10px;">
+        <span>CRIME INVESTIGATION<br><small style="font-weight:400;font-size:.78rem;opacity:.85;">WEBSITE</small></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+          <li class="nav-item"><a class="nav-link" href="../index.html"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="complaint.html"><i class="bi bi-file-earmark-text me-1"></i>File Complaint</a></li>
+          <li class="nav-item"><a class="nav-link" href="track.html"><i class="bi bi-search me-1"></i>Track Complaint</a></li>
+          <li class="nav-item"><a class="nav-link active" href="about.html"><i class="bi bi-info-circle me-1"></i>About Us</a></li>
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link nav-btn-login px-3" href="login.html"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       ABOUT HERO HEADER
+       ============================================================ -->
+  <header class="py-5 text-white" style="background: var(--hero-gradient); position: relative; overflow: hidden;">
+    <div class="container py-4 text-center position-relative" style="z-index: 2;">
+      <span class="badge mb-3 px-3 py-2 text-uppercase fw-bold text-white bg-danger" style="letter-spacing: 1.5px;">Public Safety Portal</span>
+      <h1 class="fw-bold display-5">About Our System</h1>
+      <p class="lead mx-auto text-white-50" style="max-width: 650px;">A transparent digital platform dedicated to securing public safety, streamlining reporting, and building stronger community partnerships.</p>
+    </div>
+    <!-- Subtle graphic decorations -->
+    <div style="position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,0.03);"></div>
+    <div style="position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; border-radius: 50%; background: rgba(230,57,70,0.08);"></div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT BODY
+       ============================================================ -->
+  <main class="container my-5 flex-grow-1">
+
+    <!-- Section 1: Mission & Vision -->
+    <section class="row g-4 mb-5">
+      <!-- Mission -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3">
+              <i class="bi bi-shield-shaded fs-3"></i>
+            </div>
+            <h4 class="fw-bold text-dark mb-0">Our Mission</h4>
+          </div>
+          <p class="text-muted mb-0" style="line-height: 1.7;">To empower citizens with a safe, secure, and easily accessible online platform to report incidents, track case progression, and foster trust and transparency between the public and local law enforcement bodies.</p>
+        </div>
+      </div>
+      <!-- Vision -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100 p-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-3">
+              <i class="bi bi-eye-fill fs-3"></i>
+            </div>
+            <h4 class="fw-bold text-dark mb-0">Our Vision</h4>
+          </div>
+          <p class="text-muted mb-0" style="line-height: 1.7;">To build a safer, crime-resilient nation where technology connects communities and safety services, providing instantaneous support, real-time tracking, and verified justice for every individual.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Objectives -->
+    <section class="mb-5">
+      <div class="text-center mb-4">
+        <span class="badge bg-light text-primary border px-3 py-2 text-uppercase fw-semibold mb-2">Core Drivers</span>
+        <h3 class="fw-bold text-dark">System Objectives</h3>
+        <p class="text-muted mx-auto small" style="max-width: 500px;">The primary structural goals governing the development of the Crime Investigation Website.</p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Objective 1 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100">
+            <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3 mx-auto mb-3" style="width: fit-content;">
+              <i class="bi bi-person-fill-lock fs-4"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2">Secure Anonymity</h6>
+            <p class="text-muted small mb-0">Allowing victims or whistleblowers to report incidents anonymously with top-tier data security encryption.</p>
+          </div>
+        </div>
+        <!-- Objective 2 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100">
+            <div class="p-3 bg-success bg-opacity-10 text-success rounded-3 mx-auto mb-3" style="width: fit-content;">
+              <i class="bi bi-lightning-charge-fill fs-4"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2">Accelerated Triage</h6>
+            <p class="text-muted small mb-0">Minimizing paper filing bottlenecks by routing citizen complaints directly to dispatch officers.</p>
+          </div>
+        </div>
+        <!-- Objective 3 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100">
+            <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-3 mx-auto mb-3" style="width: fit-content;">
+              <i class="bi bi-bar-chart-fill fs-4"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2">Progress Accountability</h6>
+            <p class="text-muted small mb-0">Providing continuous digital logs so citizens stay informed of each milestone in investigations.</p>
+          </div>
+        </div>
+        <!-- Objective 4 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100">
+            <div class="p-3 bg-info bg-opacity-10 text-info rounded-3 mx-auto mb-3" style="width: fit-content;">
+              <i class="bi bi-shield-check fs-4"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2">Data Integrity</h6>
+            <p class="text-muted small mb-0">Eliminating file tampering and loss through unified, immutable digital database registries.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Why Use & Benefits -->
+    <section class="row g-4 mb-5">
+      <!-- Why Use This System -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-4 h-100">
+          <h4 class="fw-bold text-dark mb-3"><i class="bi bi-question-circle-fill text-primary me-2"></i>Why Use CIW?</h4>
+          <p class="text-muted small mb-4">Traditional crime reporting requires physically visiting station houses, standing in queues, and filling out offline forms. CIW digitizes this workflow to solve safety reporting bottlenecks:</p>
+          <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+            <li class="d-flex align-items-start gap-2 text-muted small">
+              <i class="bi bi-check-circle-fill text-success mt-0.5"></i>
+              <span><strong>Instant Filing:</strong> Bypass lines. Submit comprehensive statements and location details from any device in under five minutes.</span>
+            </li>
+            <li class="d-flex align-items-start gap-2 text-muted small">
+              <i class="bi bi-check-circle-fill text-success mt-0.5"></i>
+              <span><strong>Unified Evidence Uploads:</strong> Directly attach CCTV still captures, voice recordings, document files, or photos.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Benefits for Citizens -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-4 h-100">
+          <h4 class="fw-bold text-dark mb-3"><i class="bi bi-award-fill text-danger me-2"></i>Benefits for Citizens</h4>
+          <p class="text-muted small mb-4">Our portal is designed with the safety, comfort, and accessibility requirements of general citizens in mind:</p>
+          <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+            <li class="d-flex align-items-start gap-2 text-muted small">
+              <i class="bi bi-patch-check-fill text-primary mt-0.5"></i>
+              <span><strong>Real-Time Case Notifications:</strong> Know exactly when your case gets approved, which officer is assigned, and when it is resolved.</span>
+            </li>
+            <li class="d-flex align-items-start gap-2 text-muted small">
+              <i class="bi bi-patch-check-fill text-primary mt-0.5"></i>
+              <span><strong>Guaranteed Anonymity:</strong> Citizens can hide their identifying profile to protect personal safety while still reporting public hazards.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Contact Information -->
+    <section class="card border-0 shadow-sm rounded-4 bg-white p-4 p-sm-5">
+      <div class="row g-4 align-items-center">
+        <!-- Contact details column -->
+        <div class="col-md-6">
+          <h4 class="fw-bold text-dark mb-2">Get In Touch</h4>
+          <p class="text-muted small mb-4">For system support, citizen queries, or reporting technical issues, reach out through the official support lines below.</p>
+          
+          <div class="d-flex flex-column gap-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="p-2.5 bg-primary bg-opacity-10 text-primary rounded-3"><i class="bi bi-telephone-fill fs-5"></i></div>
+              <div>
+                <span class="text-muted small d-block">Support Hotline</span>
+                <strong class="text-dark">1-800-555-CRIME (2746)</strong>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <div class="p-2.5 bg-danger bg-opacity-10 text-danger rounded-3"><i class="bi bi-exclamation-triangle-fill fs-5"></i></div>
+              <div>
+                <span class="text-muted small d-block">Emergency Services</span>
+                <strong class="text-danger">911 (Immediate Assistance)</strong>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <div class="p-2.5 bg-info bg-opacity-10 text-info rounded-3"><i class="bi bi-envelope-at-fill fs-5"></i></div>
+              <div>
+                <span class="text-muted small d-block">Official Inquiry Email</span>
+                <strong class="text-dark">support@ccms-portal.gov</strong>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <div class="p-2.5 bg-success bg-opacity-10 text-success rounded-3"><i class="bi bi-geo-alt-fill fs-5"></i></div>
+              <div>
+                <span class="text-muted small d-block">Central Registry Office</span>
+                <strong class="text-dark">Public Safety Headquarters, Sector 12, City Capital</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Styled graphic placeholder or call box -->
+        <div class="col-md-6 text-center">
+          <div class="p-4 bg-light rounded-4 border d-inline-block w-100 text-center">
+            <div class="text-primary mb-3" style="font-size: 3rem;"><i class="bi bi-chat-left-dots-fill"></i></div>
+            <h5 class="fw-bold text-dark mb-2">Online Feedback Box</h5>
+            <p class="text-muted small px-3">Have ideas to improve public reporting? Send system optimization requests directly to our software maintenance team.</p>
+            <button class="btn btn-primary px-4 py-2 mt-2 fw-semibold" style="background: var(--primary); border: none;">
+              <i class="bi bi-send-fill me-2"></i>Send Feedback Message
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="bg-dark text-white-50 text-center py-3 mt-auto">
+    <div class="container">
+      <small>&copy; 2025 Crime Investigation Website. All Rights Reserved. | Educational Student Project</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/transition.js"></script>
+</body>
+</html>

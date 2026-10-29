@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin Control Panel for Crime Investigation Website. Manage users, complaints, and generate reports.">
+  <title>Admin Portal - Crime Investigation Website</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Main Project Stylesheet -->
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="bg-light">
+
+  <div class="admin-container">
+
+    <!-- ============================================================
+         SIDEBAR MENU
+         ============================================================ -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <a class="navbar-brand text-decoration-none d-flex align-items-center gap-2" href="../index.html">
+          <img src="../images/logo.png" alt="Logo" style="height: 35px;">
+          <div class="text-white">
+            <h6 class="mb-0 fw-bold">CIW Admin</h6>
+            <small class="text-white-50" style="font-size: 0.72rem;">Control Panel</small>
+          </div>
+        </a>
+      </div>
+
+      <!-- Menu Items -->
+      <ul class="admin-sidebar-menu">
+        <li>
+          <a href="admin_dashboard.html" class="admin-sidebar-link active">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin_related_pages/complaints.html" class="admin-sidebar-link">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <span>Complaints</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin_related_pages/users.html" class="admin-sidebar-link">
+            <i class="bi bi-people-fill"></i>
+            <span>Users</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin_related_pages/contact_inquiries.html" class="admin-sidebar-link">
+            <i class="bi bi-envelope-paper-fill"></i>
+            <span>Inquiries</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin_related_pages/reports.html" class="admin-sidebar-link">
+            <i class="bi bi-bar-chart-line-fill"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin_related_pages/settings.html" class="admin-sidebar-link">
+            <i class="bi bi-gear-fill"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Footer / Sign Out -->
+      <div class="admin-sidebar-footer">
+        <a href="../index.html" class="admin-sidebar-link text-danger">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT AREA
+         ============================================================ -->
+    <main class="admin-content">
+
+      <!-- Header Block -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom g-3">
+        <div>
+          <h2 class="fw-bold text-dark mb-1">Administrative Overview</h2>
+          <p class="text-muted mb-0 small">Welcome back, Admin. System operations status report and active complaints.</p>
+        </div>
+        <div class="bg-white rounded-3 px-3 py-2 shadow-sm border">
+          <span class="text-muted small"><i class="bi bi-clock me-1 text-primary"></i>Server Time:</span>
+          <strong class="text-dark small" id="serverTimeText">10:45 AM</strong>
+        </div>
+      </div>
+
+      <!-- Statistics Dashboard Cards -->
+      <div class="row g-4 mb-4">
+        <!-- Total Complaints -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-primary">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <span class="text-muted small fw-bold uppercase">Total Complaints</span>
+                <h3 class="fw-bold text-dark mt-1 mb-0" id="statTotal">0</h3>
+              </div>
+              <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3">
+                <i class="bi bi-clipboard-data-fill fs-3"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Complaints -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-warning">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <span class="text-muted small fw-bold uppercase">Pending Cases</span>
+                <h3 class="fw-bold text-dark mt-1 mb-0" id="statPending">0</h3>
+              </div>
+              <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-3">
+                <i class="bi bi-hourglass-split fs-3"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resolved Complaints -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-success">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <span class="text-muted small fw-bold uppercase">Resolved Cases</span>
+                <h3 class="fw-bold text-dark mt-1 mb-0" id="statResolved">0</h3>
+              </div>
+              <div class="p-3 bg-success bg-opacity-10 text-success rounded-3">
+                <i class="bi bi-patch-check-fill fs-3"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Registered Users -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-info">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <span class="text-muted small fw-bold uppercase">Registered Users</span>
+                <h3 class="fw-bold text-dark mt-1 mb-0" id="statUsers">0</h3>
+              </div>
+              <div class="p-3 bg-info bg-opacity-10 text-info rounded-3">
+                <i class="bi bi-people-fill fs-3"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Complaints Management Table Card -->
+      <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between px-4">
+          <h5 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-text-fill text-primary me-2"></i>Complaints Management</h5>
+          <span class="badge bg-light text-muted border py-2 px-3 small">Active Records</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light text-muted uppercase small">
+                <tr>
+                  <th class="ps-4">Complaint ID</th>
+                  <th>Citizen Name</th>
+                  <th>Category</th>
+                  <th>Incident Date</th>
+                  <th>Status</th>
+                  <th class="text-end pe-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div id="adminEmptyState" class="text-center py-5 d-none">
+            <i class="bi bi-clipboard2-x text-muted" style="font-size: 3.5rem;"></i>
+            <h5 class="fw-bold text-dark mt-3 mb-1">No Complaints in Database</h5>
+            <p class="text-muted small">All records have been processed or deleted.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ============================================================
+       MODALS FOR ACTIONS
+       ============================================================ -->
+
+  <!-- View Complaint Details Modal -->
+  <div class="modal fade" id="adminViewModal" tabindex="-1" aria-labelledby="adminViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 rounded-4 shadow-lg">
+        <div class="modal-header text-white border-0 py-3" style="background: var(--primary-dark);">
+          <h5 class="modal-title fw-bold" id="adminViewModalLabel"><i class="bi bi-file-earmark-text-fill me-2"></i>Review Complaint Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 p-sm-5 bg-white">
+          <div class="row g-4">
+            <div class="col-sm-6 col-md-4">
+              <span class="text-muted small d-block">Complaint ID</span>
+              <strong class="text-dark fs-5" id="viewId">-</strong>
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <span class="text-muted small d-block">Citizen Name</span>
+              <strong class="text-dark fs-5" id="viewCitizenName">-</strong>
+            </div>
+            <div class="col-md-4">
+              <span class="text-muted small d-block">Current Status</span>
+              <div id="viewStatusBadge" class="mt-1"></div>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted small d-block">Complaint Category</span>
+              <strong class="text-dark" id="viewCategory">-</strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted small d-block">Incident Date</span>
+              <strong class="text-dark" id="viewDate">-</strong>
+            </div>
+            <div class="col-12">
+              <span class="text-muted small d-block">Complaint Title / Summary</span>
+              <strong class="text-dark fs-6 mt-1 d-block" id="viewTitle">-</strong>
+            </div>
+            <div class="col-12">
+              <span class="text-muted small d-block">Incident Narrative Details</span>
+              <div class="p-3 bg-light rounded-3 mt-2 small text-dark border" id="viewDescription" style="white-space: pre-line;">-</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 bg-light p-3 rounded-bottom-4">
+          <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal">Close Window</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Status Modal -->
+  <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow-lg">
+        <div class="modal-header text-white border-0 py-3" style="background: var(--primary-dark);">
+          <h5 class="modal-title fw-bold" id="statusModalLabel"><i class="bi bi-arrow-repeat me-2"></i>Update Case Status</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-white">
+          <form id="statusForm">
+            <input type="hidden" id="statusKeyId">
+            <div class="mb-4">
+              <label for="selectStatus" class="form-label small fw-semibold text-muted">Select New Investigation State</label>
+              <select class="form-select bg-light" id="selectStatus" required>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Under Investigation">Under Investigation</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm" style="background: var(--primary); border: none;">Apply Status Change</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow-lg">
+        <div class="modal-body p-4 text-center">
+          <div class="mb-3">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3.5rem;"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">Delete Confirmation</h5>
+          <p class="text-muted small mb-4">Are you sure you want to delete this record? This action cannot be undone and will permanently remove it from the database.</p>
+          <input type="hidden" id="deleteKeyId">
+          <div class="d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">NO</button>
+            <button type="button" class="btn btn-danger px-4 py-2 shadow-sm" id="confirmDeleteBtn">YES</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Admin Dashboard JS Logic -->
+  <script src="../js/admin_dashboard.js"></script>
+<script src="../js/transition.js"></script>
+</body>
+</html>
