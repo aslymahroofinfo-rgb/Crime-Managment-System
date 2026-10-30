@@ -154,17 +154,24 @@ export default function About() {
 
               <div className="d-flex flex-column gap-3">
                 <div className="d-flex align-items-center gap-3">
-                  <div className="p-2.5 bg-primary bg-opacity-10 text-primary rounded-3"><i className="bi bi-telephone-fill fs-5"></i></div>
+                  <div className="p-2.5 bg-danger bg-opacity-10 text-danger rounded-3"><i className="bi bi-telephone-fill fs-5"></i></div>
                   <div>
-                    <span className="text-muted small d-block">Support Hotline</span>
-                    <strong className="text-dark">1-800-555-CRIME (2746)</strong>
+                    <span className="text-muted small d-block">Police Emergency</span>
+                    <a href="tel:119" className="text-danger fw-bold text-decoration-none">119 (Immediate Response)</a>
                   </div>
                 </div>
                 <div className="d-flex align-items-center gap-3">
-                  <div className="p-2.5 bg-danger bg-opacity-10 text-danger rounded-3"><i className="bi bi-exclamation-triangle-fill fs-5"></i></div>
+                  <div className="p-2.5 bg-success bg-opacity-10 text-success rounded-3"><i className="bi bi-heart-pulse-fill fs-5"></i></div>
                   <div>
-                    <span className="text-muted small d-block">Emergency Services</span>
-                    <strong className="text-danger">911 (Immediate Assistance)</strong>
+                    <span className="text-muted small d-block">Emergency Ambulance</span>
+                    <a href="tel:1990" className="text-success fw-bold text-decoration-none">1990 Suwa Seriya</a>
+                  </div>
+                </div>
+                <div className="d-flex align-items-center gap-3">
+                  <div className="p-2.5 bg-primary bg-opacity-10 text-primary rounded-3"><i className="bi bi-building fs-5"></i></div>
+                  <div>
+                    <span className="text-muted small d-block">Government Information Centre</span>
+                    <a href="tel:1919" className="text-primary fw-bold text-decoration-none">1919 (GIC Hotline)</a>
                   </div>
                 </div>
                 <div className="d-flex align-items-center gap-3">

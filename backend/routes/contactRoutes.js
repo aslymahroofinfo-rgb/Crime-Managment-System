@@ -7,7 +7,7 @@ const {
   getInquiryById,
   updateInquiryStatus
 } = require('../controllers/contactController');
-const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, adminMiddleware, requirePermission } = require('../middleware/authMiddleware');
 
 // Public submission rate limiter: 25 submissions per 15 mins per IP
 const contactSubmitLimiter = rateLimit({
@@ -22,9 +22,9 @@ const contactSubmitLimiter = rateLimit({
 router.post('/', contactSubmitLimiter, submitContactInquiry);
 
 // Admin-Only Endpoints
-router.get('/', authMiddleware, adminMiddleware, getAllInquiries);
-router.get('/:id', authMiddleware, adminMiddleware, getInquiryById);
-router.put('/:id/status', authMiddleware, adminMiddleware, updateInquiryStatus);
+router.get('/', authMiddleware, adminMiddleware, requirePermission('manageInquiries'), getAllInquiries);
+router.get('/:id', authMiddleware, adminMiddleware, requirePermission('manageInquiries'), getInquiryById);
+router.put('/:id/status', authMiddleware, adminMiddleware, requirePermission('manageInquiries'), updateInquiryStatus);
 
 module.exports = router;
 

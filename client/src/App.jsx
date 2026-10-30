@@ -33,6 +33,7 @@ import AdminInquiries from './pages/admin/AdminInquiries';
 import AdminReports from './pages/admin/AdminReports';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminAudit from './pages/admin/AdminAudit';
+import AdminAdministrators from './pages/admin/AdminAdministrators';
 
 // Global Transition Context & Overlay
 import { PageTransitionProvider } from './context/PageTransitionContext';
@@ -78,6 +79,7 @@ export default function App() {
             <Route path="reports" element={<AdminReports />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="audit" element={<AdminAudit />} />
+            <Route path="administrators" element={<AdminAdministrators />} />
           </Route>
         </Routes>
         </PageTransitionProvider>

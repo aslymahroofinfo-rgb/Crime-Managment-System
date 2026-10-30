@@ -72,7 +72,12 @@ export default function AdminEmergencies() {
           <h2 className="fw-bold text-dark mb-1">Emergency Reports</h2>
           <p className="text-muted mb-0 small">Quick review panel for urgent complaints only.</p>
         </div>
-        <div>
+        <div className="d-flex align-items-center gap-2">
+          <div className="bg-light px-3 py-1.5 rounded-3 border d-none d-md-flex align-items-center gap-3 small">
+            <span className="text-muted"><i className="bi bi-telephone-fill text-danger me-1"></i>Police: <strong>119</strong></span>
+            <span className="text-muted"><i className="bi bi-telephone-fill text-success me-1"></i>Ambulance: <strong>1990</strong></span>
+            <span className="text-muted"><i className="bi bi-telephone-fill text-dark me-1"></i>Fire: <strong>110</strong></span>
+          </div>
           <Link to="/admin/complaints" className="btn btn-sm btn-outline-secondary">
             <i className="bi bi-arrow-left me-1"></i>All Complaints
           </Link>
@@ -307,31 +312,31 @@ export default function AdminEmergencies() {
                       <span>Submission Security Information</span>
                     </h6>
 
-                    {selectedCase.submissionMetadata ? (
+                    {selectedCase.submissionMetadata && selectedCase.submissionMetadata.ipAddress ? (
                       <div className="p-3 bg-light rounded-3 border">
                         <div className="row g-3 small">
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Observed IP Address</span>
                             <strong className="text-dark font-monospace">
-                              {selectedCase.submissionMetadata.ipAddress || 'Not recorded'}
+                              {selectedCase.submissionMetadata.ipAddress}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Device Category</span>
                             <strong className="text-dark">
-                              {selectedCase.submissionMetadata.deviceType || 'Desktop'}
+                              {selectedCase.submissionMetadata.deviceType || 'Unknown'}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Browser / Client</span>
                             <strong className="text-dark">
-                              {selectedCase.submissionMetadata.browser || 'Browser'}
+                              {selectedCase.submissionMetadata.browser || 'Unknown'}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Operating System</span>
                             <strong className="text-dark">
-                              {selectedCase.submissionMetadata.operatingSystem || 'OS'}
+                              {selectedCase.submissionMetadata.operatingSystem || 'Unknown'}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-4">

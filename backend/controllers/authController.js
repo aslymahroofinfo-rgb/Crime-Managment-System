@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { mockUsers, findMockUserByEmail } = require('../mockData');
 const { logAudit } = require('../services/auditService');
+const { DEFAULT_ADMIN_PERMISSIONS } = require('../middleware/authMiddleware');
 
 const DISTRICTS = {
   'colombo': '1', 'gampaha': '2', 'kalutara': '3', 'kandy': '4', 'matale': '5',
@@ -64,12 +65,35 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const count = await User.countDocuments({ role: 'Citizen' });
     let distCode = '0';
     if (district && DISTRICTS[String(district).toLowerCase().trim()]) {
       distCode = DISTRICTS[String(district).toLowerCase().trim()];
     }
-    const citizenId = `CIW-USER-${distCode}-${String(count + 1).padStart(4, '0')}`;
+
+    // Sequence calculation ensuring monotonic uniqueness across deletions
+    let nextSeq = (await User.countDocuments({ role: 'Citizen' })) + 1;
+    const existingCitizens = await User.find({ citizenId: { $regex: '^CIW-USER-' } }, { citizenId: 1 }).lean();
+    if (existingCitizens && existingCitizens.length > 0) {
+      let maxNum = 0;
+      for (const u of existingCitizens) {
+        if (u.citizenId) {
+          const parts = u.citizenId.split('-');
+          const lastNum = parseInt(parts[parts.length - 1], 10);
+          if (!isNaN(lastNum) && lastNum > maxNum) {
+            maxNum = lastNum;
+          }
+        }
+      }
+      if (maxNum >= nextSeq) {
+        nextSeq = maxNum + 1;
+      }
+    }
+
+    let citizenId = `CIW-USER-${distCode}-${String(nextSeq).padStart(4, '0')}`;
+    while (await User.exists({ citizenId })) {
+      nextSeq += 1;
+      citizenId = `CIW-USER-${distCode}-${String(nextSeq).padStart(4, '0')}`;
+    }
 
     const address = {
       no: addressNo ? String(addressNo).trim() : '',
@@ -159,6 +183,8 @@ const login = async (req, res) => {
           fullName: user.fullName,
           email: user.email,
           role: user.role,
+          permissions: user.permissions || { ...DEFAULT_ADMIN_PERMISSIONS },
+          mustChangePassword: Boolean(user.mustChangePassword),
           phoneNumber: user.phoneNumber,
           address: user.address,
           isActive: user.isActive !== false
@@ -216,6 +242,8 @@ const login = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         role: user.role,
+        permissions: user.permissions || { ...DEFAULT_ADMIN_PERMISSIONS },
+        mustChangePassword: Boolean(user.mustChangePassword),
         phoneNumber: user.phoneNumber,
         address: user.address,
         isActive: user.isActive !== false

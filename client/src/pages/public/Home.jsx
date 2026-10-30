@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
 import ToastAlert from '../../components/feedback/ToastAlert';
+import { PRIMARY_EMERGENCY_CONTACTS, SECONDARY_EMERGENCY_CONTACTS } from '../../constants/emergencyContacts';
 
 const SRI_LANKA_DISTRICTS = [
   'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo',
@@ -177,13 +178,13 @@ export default function Home() {
       } else {
         setEmergencyAlert({
           type: 'danger',
-          message: res.data?.message || 'Emergency dispatch recording failed. Please call 119 or 118 directly.'
+          message: res.data?.message || 'Emergency dispatch recording failed. Please call Police 119 or Ambulance 1990 directly.'
         });
       }
     } catch {
       setEmergencyAlert({
         type: 'danger',
-        message: 'Network error. Please call 119 or 118 immediately for life-threatening emergencies.'
+        message: 'Network error. Please call Police 119 or Ambulance 1990 immediately for life-threatening emergencies.'
       });
     } finally {
       setIsSubmitting(false);
@@ -344,84 +345,102 @@ export default function Home() {
            ============================================================ */}
       <section className="emergency-section" id="emergency">
         <div className="container">
-          <div className="section-heading">
-            <span className="section-badge">Helplines</span>
-            <h2>Emergency Contacts</h2>
-            <p>Reach the right authority instantly. Save these numbers for emergencies.</p>
+          <div className="section-heading text-center mb-5">
+            <span className="section-badge">Verified Helplines</span>
+            <h2>Emergency Assistance</h2>
+            <p className="text-muted col-md-8 mx-auto">
+              If someone is in immediate danger or distress, contact the appropriate national emergency service immediately.
+            </p>
             <div className="section-divider"></div>
           </div>
 
-          <div className="row g-4">
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon text-primary"><i className="bi bi-shield-fill-check"></i></div>
-                <h6>Police Emergency</h6>
-                <span className="emergency-number">100</span>
-                <a href="tel:100" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
+          {/* Primary Emergency Contacts (Prominent Top Priority) */}
+          <div className="row g-4 justify-content-center mb-5">
+            {PRIMARY_EMERGENCY_CONTACTS.map((contact) => (
+              <div key={contact.id} className="col-12 col-md-4">
+                <div
+                  className="emergency-card primary-emergency-card h-100 p-4 rounded-4 shadow-sm text-center d-flex flex-column justify-content-between position-relative"
+                  style={{
+                    borderTop: `5px solid ${contact.color}`,
+                    background: '#fff'
+                  }}
+                >
+                  <div>
+                    <div
+                      className="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                      style={{
+                        width: '64px',
+                        height: '64px',
+                        backgroundColor: contact.bgLight,
+                        color: contact.color,
+                        fontSize: '1.8rem'
+                      }}
+                    >
+                      <i className={`bi ${contact.icon}`}></i>
+                    </div>
+                    <h5 className="fw-bold text-dark mb-1">{contact.name}</h5>
+                    <p className="text-muted small mb-3">{contact.description}</p>
+                    <div className="display-5 fw-bold mb-3" style={{ color: contact.color, letterSpacing: '1px' }}>
+                      {contact.number}
+                    </div>
+                  </div>
+                  <div>
+                    <a
+                      href={`tel:${contact.number}`}
+                      className="btn w-100 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2"
+                      style={{ backgroundColor: contact.color, borderColor: contact.color, color: '#fff' }}
+                      aria-label={contact.ariaLabel}
+                    >
+                      <i className="bi bi-telephone-fill"></i>
+                      <span>{contact.callLabel}</span>
+                    </a>
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+
+          {/* Secondary Emergency & Support Numbers */}
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-4 p-md-5">
+            <div className="d-flex flex-wrap align-items-center justify-content-between pb-3 mb-4 border-bottom gap-2">
+              <div>
+                <h5 className="fw-bold text-dark mb-1">
+                  <i className="bi bi-telephone-outbound-fill text-primary me-2"></i>
+                  Other Emergency & Support Numbers
+                </h5>
+                <p className="text-muted small mb-0">
+                  Verified Sri Lankan national specialized hotlines for public safety, welfare, and citizen support.
+                </p>
+              </div>
+              <span className="badge bg-light text-muted border px-3 py-2 small">
+                National Sri Lanka Directory
+              </span>
             </div>
 
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon" style={{ color: '#d63384' }}><i className="bi bi-gender-female"></i></div>
-                <h6>Women's Safety Helpline</h6>
-                <span className="emergency-number">1091</span>
-                <a href="tel:1091" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
-              </div>
-            </div>
-
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon" style={{ color: '#fd7e14' }}><i className="bi bi-person-hearts"></i></div>
-                <h6>Child Protection</h6>
-                <span className="emergency-number">1098</span>
-                <a href="tel:1098" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
-              </div>
-            </div>
-
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon" style={{ color: '#198754' }}><i className="bi bi-heart-pulse-fill"></i></div>
-                <h6>Ambulance Service</h6>
-                <span className="emergency-number">108</span>
-                <a href="tel:108" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
-              </div>
-            </div>
-
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon" style={{ color: '#dc3545' }}><i className="bi bi-fire"></i></div>
-                <h6>Fire & Rescue</h6>
-                <span className="emergency-number">101</span>
-                <a href="tel:101" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
-              </div>
-            </div>
-
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon" style={{ color: '#6f42c1' }}><i className="bi bi-laptop-fill"></i></div>
-                <h6>Cyber Crime Helpline</h6>
-                <span className="emergency-number">1930</span>
-                <a href="tel:1930" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
-              </div>
-            </div>
-
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon" style={{ color: '#e07b2a' }}><i className="bi bi-house-exclamation-fill"></i></div>
-                <h6>Domestic Violence</h6>
-                <span className="emergency-number">181</span>
-                <a href="tel:181" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
-              </div>
-            </div>
-
-            <div className="col-6 col-md-4 col-lg-3">
-              <div className="emergency-card">
-                <div className="emergency-icon" style={{ color: '#20b2aa' }}><i className="bi bi-person-cane"></i></div>
-                <h6>Senior Citizen Helpline</h6>
-                <span className="emergency-number">14567</span>
-                <a href="tel:14567" className="btn-call"><i className="bi bi-telephone-fill"></i> Call Now</a>
-              </div>
+            <div className="row g-3">
+              {SECONDARY_EMERGENCY_CONTACTS.map((item) => (
+                <div key={item.id} className="col-12 col-sm-6 col-lg-4 col-xl-3">
+                  <div className="p-3 rounded-3 border bg-light h-100 d-flex flex-column justify-content-between">
+                    <div>
+                      <div className="d-flex align-items-center justify-content-between mb-1">
+                        <span className="badge bg-secondary bg-opacity-10 text-secondary border small" style={{ fontSize: '0.7rem' }}>
+                          {item.category}
+                        </span>
+                        <strong className="text-dark font-monospace fs-5">{item.number}</strong>
+                      </div>
+                      <h6 className="fw-semibold text-dark small mb-2">{item.name}</h6>
+                    </div>
+                    <a
+                      href={`tel:${item.number}`}
+                      className="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-1.5 mt-2"
+                      aria-label={item.ariaLabel}
+                    >
+                      <i className="bi bi-telephone-fill"></i>
+                      <span>{item.callLabel}</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -618,11 +637,25 @@ export default function Home() {
               </div>
 
               <div className="modal-body py-4 px-4 px-md-5">
-                <div className="alert alert-danger bg-danger bg-opacity-10 border border-danger-subtle rounded-3 py-2 px-3 mb-4 d-flex align-items-center">
-                  <i className="bi bi-shield-exclamation text-danger fs-4 me-3 flex-shrink-0"></i>
-                  <span className="small text-danger fw-medium">
-                    This priority channel alerts rapid-response dispatchers. For active life-threatening danger, also call <strong>119</strong> or <strong>118</strong> immediately.
-                  </span>
+                <div className="alert alert-danger bg-danger bg-opacity-10 border border-danger-subtle rounded-3 p-3 mb-4 d-flex align-items-start gap-3">
+                  <i className="bi bi-exclamation-octagon-fill text-danger fs-4 flex-shrink-0 mt-0.5"></i>
+                  <div>
+                    <strong className="d-block text-danger mb-1">Immediate Threat to Life or Safety Warning:</strong>
+                    <span className="small text-danger d-block mb-2">
+                      If there is an immediate threat to life or safety, do not rely only on an online complaint. Contact national emergency response services immediately:
+                    </span>
+                    <div className="d-flex flex-wrap gap-2">
+                      <a href="tel:119" className="btn btn-sm btn-danger py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-white text-decoration-none">
+                        <i className="bi bi-telephone-fill"></i> Police: 119
+                      </a>
+                      <a href="tel:1990" className="btn btn-sm btn-success py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-white text-decoration-none">
+                        <i className="bi bi-telephone-fill"></i> Ambulance: 1990
+                      </a>
+                      <a href="tel:110" className="btn btn-sm btn-dark py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-white text-decoration-none">
+                        <i className="bi bi-telephone-fill"></i> Fire & Rescue: 110
+                      </a>
+                    </div>
+                  </div>
                 </div>
 
                 {emergencyAlert && (

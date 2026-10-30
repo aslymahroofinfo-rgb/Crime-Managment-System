@@ -7,28 +7,9 @@ const { mockComplaints, findMockUserById, getNextComplaintId } = require('../moc
 const { logAudit } = require('../services/auditService');
 const { sendComplaintSubmittedEmail, sendComplaintStatusChangedEmail } = require('../services/emailService');
 const { getClientIp, maskIp, parseUserAgent } = require('../utils/clientInfo');
+const { UPLOAD_DIR, resolveEvidencePath, cleanupEvidenceFiles } = require('../config/storage');
 
-const uploadsDir = path.resolve(__dirname, '../uploads');
-
-/**
- * Safely unlinks an array of evidence filenames from the uploads directory
- */
-const cleanupUploadedFiles = (fileList) => {
-  if (!Array.isArray(fileList)) return;
-  fileList.forEach((fileName) => {
-    try {
-      if (!fileName || typeof fileName !== 'string') return;
-      const safeName = path.basename(fileName.replace(/\\/g, '/')).trim();
-      if (!safeName) return;
-      const targetPath = path.resolve(uploadsDir, safeName);
-      if (targetPath.startsWith(uploadsDir + path.sep) && fs.existsSync(targetPath)) {
-        fs.unlinkSync(targetPath);
-      }
-    } catch (err) {
-      console.error(`Failed to clean up evidence file ${fileName}:`, err.message);
-    }
-  });
-};
+const cleanupUploadedFiles = cleanupEvidenceFiles;
 
 const serializeComplaint = (complaint) => {
   const user = complaint.userId ? findMockUserById(complaint.userId) : null;
@@ -471,7 +452,8 @@ const getAllComplaints = async (req, res) => {
     const isPaginated = page !== undefined || limit !== undefined;
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 25));
-    const isSuperAdmin = req.user && req.user.role === 'SuperAdmin';
+    const roleLower = String(req.user?.role || '').toLowerCase();
+    const isSuperAdmin = roleLower === 'superadmin';
 
     if (global.useMockData) {
       let filtered = [...mockComplaints];
@@ -513,7 +495,9 @@ const getAllComplaints = async (req, res) => {
           user: complaint.isAnonymous ? null : item.user
         };
         if (doc.submissionMetadata) {
-          if (!isSuperAdmin) {
+          if (!doc.submissionMetadata.ipAddress) {
+            doc.submissionMetadata = null;
+          } else if (!isSuperAdmin) {
             doc.submissionMetadata.ipAddress = maskIp(doc.submissionMetadata.ipAddress);
           } else {
             doc.submissionMetadata.maskedIp = maskIp(doc.submissionMetadata.ipAddress);
@@ -577,7 +561,9 @@ const getAllComplaints = async (req, res) => {
         doc.user = null;
       }
       if (doc.submissionMetadata) {
-        if (!isSuperAdmin) {
+        if (!doc.submissionMetadata.ipAddress) {
+          doc.submissionMetadata = null;
+        } else if (!isSuperAdmin) {
           doc.submissionMetadata.ipAddress = maskIp(doc.submissionMetadata.ipAddress);
         } else {
           doc.submissionMetadata.maskedIp = maskIp(doc.submissionMetadata.ipAddress);
@@ -607,8 +593,9 @@ const getAllComplaints = async (req, res) => {
 const getComplaintById = async (req, res) => {
   try {
     const { id } = req.params;
-    const isAdmin = req.user && (req.user.role === 'Admin' || req.user.role === 'SuperAdmin');
-    const isSuperAdmin = req.user && req.user.role === 'SuperAdmin';
+    const roleLower = String(req.user?.role || '').toLowerCase();
+    const isAdmin = req.user && (roleLower === 'admin' || roleLower === 'superadmin');
+    const isSuperAdmin = req.user && roleLower === 'superadmin';
 
     if (global.useMockData) {
       const complaint = mockComplaints.find((entry) => entry.complaintId === id || entry._id === id);
@@ -628,7 +615,9 @@ const getComplaintById = async (req, res) => {
           serialised.user = null;
         }
         if (serialised.submissionMetadata) {
-          if (!isSuperAdmin) {
+          if (!serialised.submissionMetadata.ipAddress) {
+            serialised.submissionMetadata = null;
+          } else if (!isSuperAdmin) {
             serialised.submissionMetadata.ipAddress = maskIp(serialised.submissionMetadata.ipAddress);
           } else {
             serialised.submissionMetadata.maskedIp = maskIp(serialised.submissionMetadata.ipAddress);
@@ -664,7 +653,9 @@ const getComplaintById = async (req, res) => {
         doc.user = null;
       }
       if (doc.submissionMetadata) {
-        if (!isSuperAdmin) {
+        if (!doc.submissionMetadata.ipAddress) {
+          doc.submissionMetadata = null;
+        } else if (!isSuperAdmin) {
           doc.submissionMetadata.ipAddress = maskIp(doc.submissionMetadata.ipAddress);
         } else {
           doc.submissionMetadata.maskedIp = maskIp(doc.submissionMetadata.ipAddress);
@@ -1228,10 +1219,10 @@ const getComplaintEvidence = async (req, res) => {
       return res.status(404).json({ message: 'Invalid evidence file reference.' });
     }
 
-    const filePath = path.resolve(uploadsDir, safeBasename);
+    const filePath = resolveEvidencePath(safeBasename);
 
     // Verify path does not escape the uploads directory (path traversal check)
-    if (!filePath.startsWith(uploadsDir + path.sep) && filePath !== uploadsDir) {
+    if (!filePath) {
       return res.status(403).json({ message: 'Access denied. Invalid file path.' });
     }
 

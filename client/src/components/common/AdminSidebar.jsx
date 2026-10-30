@@ -92,15 +92,26 @@ export default function AdminSidebar() {
           </NavLink>
         </li>
         {isSuperAdmin && (
-          <li>
-            <NavLink
-              to="/admin/audit"
-              className={({ isActive }) => `admin-sidebar-link ${isActive ? 'active' : ''}`}
-            >
-              <i className="bi bi-shield-shaded"></i>
-              <span>Audit Logs</span>
-            </NavLink>
-          </li>
+          <>
+            <li>
+              <NavLink
+                to="/admin/administrators"
+                className={({ isActive }) => `admin-sidebar-link ${isActive ? 'active' : ''}`}
+              >
+                <i className="bi bi-person-gear"></i>
+                <span>Admin Management</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/admin/audit"
+                className={({ isActive }) => `admin-sidebar-link ${isActive ? 'active' : ''}`}
+              >
+                <i className="bi bi-shield-shaded"></i>
+                <span>Audit Logs</span>
+              </NavLink>
+            </li>
+          </>
         )}
       </ul>
 

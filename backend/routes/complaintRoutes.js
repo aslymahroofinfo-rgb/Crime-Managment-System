@@ -5,11 +5,12 @@ const path = require('path');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const { submitComplaint, getMyComplaints, getAllComplaints, getComplaintById, trackComplaint, updateStatus, deleteComplaint, updateMyComplaint, deleteMyComplaint, getComplaintEvidence } = require('../controllers/complaintController');
-const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, adminMiddleware, requirePermission } = require('../middleware/authMiddleware');
+const { UPLOAD_DIR } = require('../config/storage');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, UPLOAD_DIR);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname || '').toLowerCase();
@@ -95,8 +96,8 @@ router.delete('/my/:id', authMiddleware, deleteMyComplaint);
 
 // Protected Admin Routes
 router.get('/all', authMiddleware, adminMiddleware, getAllComplaints);
-router.put('/:id/status', authMiddleware, adminMiddleware, updateStatus);
-router.delete('/:id', authMiddleware, adminMiddleware, deleteComplaint);
+router.put('/:id/status', authMiddleware, adminMiddleware, requirePermission('manageComplaints'), updateStatus);
+router.delete('/:id', authMiddleware, adminMiddleware, requirePermission('manageComplaints'), deleteComplaint);
 
 // Protected Evidence Route (Auth required: Owner or Admin) - MUST BE BEFORE /:id !
 router.get('/:id/evidence/:index', authMiddleware, getComplaintEvidence);

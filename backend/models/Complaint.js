@@ -23,13 +23,16 @@ const complaintSchema = new mongoose.Schema({
     phoneVerified: { type: Boolean, default: false }
   },
   submissionMetadata: {
-    ipAddress: { type: String, trim: true },
-    userAgent: { type: String, trim: true },
-    deviceType: { type: String, trim: true },
-    browser: { type: String, trim: true },
-    operatingSystem: { type: String, trim: true },
-    submittedAt: { type: Date, default: Date.now },
-    source: { type: String, trim: true, default: 'Web Portal' }
+    type: new mongoose.Schema({
+      ipAddress: { type: String, trim: true },
+      userAgent: { type: String, trim: true },
+      deviceType: { type: String, trim: true },
+      browser: { type: String, trim: true },
+      operatingSystem: { type: String, trim: true },
+      submittedAt: { type: Date, default: Date.now },
+      source: { type: String, trim: true, default: 'Web Portal' }
+    }, { _id: false }),
+    default: null
   },
   isEmergency: { type: Boolean, default: false, index: true },
   description: { type: String, required: true, trim: true },

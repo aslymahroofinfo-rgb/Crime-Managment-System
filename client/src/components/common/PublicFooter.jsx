@@ -39,13 +39,24 @@ export default function PublicFooter() {
             </ul>
           </div>
           <div className="col-lg-3 col-md-6">
-            <h6 className="text-white fw-bold mb-3 uppercase">Emergency Helpline</h6>
+            <h6 className="text-white fw-bold mb-3 uppercase">National Helplines</h6>
             <div className="bg-dark bg-opacity-50 p-3 rounded-3 border border-secondary border-opacity-25">
-              <p className="text-white mb-1">
-                <i className="bi bi-telephone-fill text-danger me-2"></i>Police: <strong className="fs-5">911</strong>
-              </p>
-              <p className="text-white-50 small mb-0 mt-2">
-                Available 24/7 for immediate life-threatening emergency response.
+              <div className="d-flex flex-column gap-2 mb-2">
+                <a href="tel:119" className="text-white text-decoration-none d-flex align-items-center justify-content-between small">
+                  <span><i className="bi bi-telephone-fill text-danger me-2"></i>Police Emergency</span>
+                  <strong className="badge bg-danger">119</strong>
+                </a>
+                <a href="tel:1990" className="text-white text-decoration-none d-flex align-items-center justify-content-between small">
+                  <span><i className="bi bi-telephone-fill text-success me-2"></i>Suwa Seriya Ambulance</span>
+                  <strong className="badge bg-success">1990</strong>
+                </a>
+                <a href="tel:110" className="text-white text-decoration-none d-flex align-items-center justify-content-between small">
+                  <span><i className="bi bi-telephone-fill text-warning me-2"></i>Fire & Rescue</span>
+                  <strong className="badge bg-warning text-dark">110</strong>
+                </a>
+              </div>
+              <p className="text-white-50 small mb-0" style={{ fontSize: '0.72rem' }}>
+                Available 24/7 island-wide for immediate emergency response.
               </p>
             </div>
           </div>

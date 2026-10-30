@@ -45,12 +45,40 @@ export const adminService = {
     return api.get('/users/count');
   },
 
+  createAdmin: async (data) => {
+    return api.post('/users/admins', data);
+  },
+
+  promoteUser: async (id, targetRole) => {
+    return api.put(`/users/${encodeURIComponent(id)}/promote`, { targetRole });
+  },
+
+  promoteUserToAdmin: async (id) => {
+    return api.put(`/users/${encodeURIComponent(id)}/promote`, { targetRole: 'Admin' });
+  },
+
+  demoteUser: async (id, targetRole) => {
+    return api.put(`/users/${encodeURIComponent(id)}/demote`, { targetRole });
+  },
+
+  updateAdminPermissions: async (id, permissions) => {
+    return api.put(`/users/${encodeURIComponent(id)}/permissions`, { permissions });
+  },
+
+  deactivateUser: async (id) => {
+    return api.put(`/users/${encodeURIComponent(id)}/deactivate`);
+  },
+
+  reactivateUser: async (id) => {
+    return api.put(`/users/${encodeURIComponent(id)}/reactivate`);
+  },
+
   deleteUser: async (id) => {
     return api.delete(`/users/${encodeURIComponent(id)}`);
   },
 
-  promoteUserToAdmin: async (id) => {
-    return api.put(`/users/${encodeURIComponent(id)}/promote`);
+  permanentDeleteUser: async (id) => {
+    return api.delete(`/users/${encodeURIComponent(id)}/permanent`);
   }
 };
 

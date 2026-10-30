@@ -19,6 +19,18 @@ const userSchema = new mongoose.Schema({
     default: 'Citizen',
     index: true
   },
+  permissions: {
+    manageComplaints: { type: Boolean, default: true },
+    manageEmergencies: { type: Boolean, default: true },
+    manageUsers: { type: Boolean, default: true },
+    manageInquiries: { type: Boolean, default: true },
+    viewReports: { type: Boolean, default: true },
+    manageSettings: { type: Boolean, default: true },
+    viewAuditLogs: { type: Boolean, default: false },
+    viewSecurityMetadata: { type: Boolean, default: false },
+    manageAdministrators: { type: Boolean, default: false }
+  },
+  mustChangePassword: { type: Boolean, default: false },
   isActive: { type: Boolean, default: true, index: true },
   deletedAt: { type: Date, default: null }
 }, {

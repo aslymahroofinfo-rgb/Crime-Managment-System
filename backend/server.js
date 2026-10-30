@@ -26,16 +26,25 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const auditRoutes = require('./routes/auditRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
+const { ensureUploadDir } = require('./config/storage');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProduction = NODE_ENV === 'production';
 
-// Ensure uploads dir exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
+// Ensure uploads persistent directory exists
+ensureUploadDir();
+
+// Reverse proxy trust handling (Essential for Render, Cloudflare, load balancers, and real client IP extraction)
+const trustProxySetting = process.env.TRUST_PROXY;
+if (trustProxySetting === 'true' || trustProxySetting === '1') {
+  app.set('trust proxy', 1);
+} else if (trustProxySetting && !isNaN(trustProxySetting)) {
+  app.set('trust proxy', parseInt(trustProxySetting, 10));
+} else if (isProduction) {
+  // Cloud deployment default: trust the first reverse proxy hop
+  app.set('trust proxy', 1);
 }
 
 // Security headers with Helmet
@@ -43,17 +52,34 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Hardened CORS policy
-const allowedOrigins = [
-  process.env.CLIENT_URL,
+// Hardened, environment-aware CORS policy
+const configuredOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map(url => url.trim())
+  .filter(Boolean);
+
+const devOrigins = [
   'http://localhost:5173',
-  'http://localhost:5174'
-].filter(Boolean);
+  'http://localhost:5174',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174'
+];
+
+const allowedOrigins = isProduction
+  ? configuredOrigins
+  : Array.from(new Set([...configuredOrigins, ...devOrigins]));
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (such as mobile apps, server-to-server or tests)
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (such as mobile apps, server-to-server or automated health checks)
+    if (!origin) {
+      return callback(null, true);
+    }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    if (!isProduction && devOrigins.includes(origin)) {
       return callback(null, true);
     }
     return callback(new Error(`CORS policy violation: origin ${origin} is not allowed`));
@@ -66,6 +92,16 @@ app.use(cors({
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
+// Operational Health Check Endpoint (Safe for uptime monitors and deployment checks)
+app.get('/api/health', (req, res) => {
+  const isConnected = mongoose.connection.readyState === 1;
+  const statusCode = isConnected ? 200 : 503;
+  res.status(statusCode).json({
+    status: isConnected ? 'ok' : 'degraded',
+    database: isConnected ? 'connected' : 'disconnected'
+  });
+});
+
 // Protect direct public access to /uploads directory
 app.use('/uploads', (req, res) => {
   res.status(403).json({
@@ -73,7 +109,7 @@ app.use('/uploads', (req, res) => {
   });
 });
 
-// Basic Route
+// Basic Root Route
 app.get('/', (req, res) => {
   res.send('Crime Complaint Management System Backend is running!');
 });
@@ -131,8 +167,8 @@ const startServer = async () => {
     }
   }
 
-  // Start the server
-  app.listen(PORT, () => {
+  // Start the server (bind on 0.0.0.0 for cloud environments like Render)
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port: ${PORT} (Environment: ${NODE_ENV})`);
     console.log(global.useMockData ? 'Mode: Mock Data' : 'Mode: MongoDB Production');
   });

@@ -43,8 +43,13 @@ const errorHandler = (err, req, res, next) => {
 
   const isProduction = process.env.NODE_ENV === 'production';
 
+  // Sanitize internal server errors in production to prevent leaking sensitive infrastructure or database info
+  const clientMessage = isProduction && statusCode === 500
+    ? 'An unexpected server error occurred. Please try again later.'
+    : message;
+
   res.status(statusCode).json({
-    message,
+    message: clientMessage,
     ...(isProduction ? {} : { stack: err.stack })
   });
 };

@@ -403,6 +403,28 @@ export default function FileComplaint() {
             </p>
           </div>
 
+          {/* Emergency Safety Advisory */}
+          <div className="alert alert-danger d-flex align-items-start gap-3 border-0 shadow-sm mb-4 rounded-3">
+            <i className="bi bi-exclamation-octagon-fill fs-4 text-danger flex-shrink-0 mt-0.5"></i>
+            <div className="w-100">
+              <strong className="text-danger d-block mb-1">Immediate Threat to Life or Safety Warning:</strong>
+              <span className="small text-dark-50 d-block mb-2">
+                If there is an immediate threat to life or safety, do not rely only on an online complaint. Call national emergency responders directly:
+              </span>
+              <div className="d-flex flex-wrap gap-2">
+                <a href="tel:119" className="btn btn-sm btn-danger py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-white text-decoration-none">
+                  <i className="bi bi-telephone-fill"></i> Call Police — 119
+                </a>
+                <a href="tel:1990" className="btn btn-sm btn-success py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-white text-decoration-none">
+                  <i className="bi bi-telephone-fill"></i> Call Ambulance — 1990
+                </a>
+                <a href="tel:110" className="btn btn-sm btn-dark py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-white text-decoration-none">
+                  <i className="bi bi-telephone-fill"></i> Call Fire & Rescue — 110
+                </a>
+              </div>
+            </div>
+          </div>
+
           {/* Legal Warning */}
           <div className="alert alert-warning d-flex align-items-start gap-3 border-0 shadow-sm mb-4 rounded-3">
             <i className="bi bi-exclamation-triangle-fill fs-4 text-warning"></i>

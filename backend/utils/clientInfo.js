@@ -21,9 +21,13 @@ function normalizeIp(ipStr) {
 }
 
 function getClientIp(req) {
-  // Only trust X-Forwarded-For if explicitly configured via TRUST_PROXY env variable
-  // This prevents attackers from spoofing their IP via fake request headers
-  const trustProxy = process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1';
+  const isProduction = process.env.NODE_ENV === 'production';
+  const trustProxy = process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1' || isProduction;
+
+  // When trust proxy is active, Express populates req.ip using verified reverse proxy hops
+  if (trustProxy && req.ip) {
+    return normalizeIp(req.ip);
+  }
 
   if (trustProxy && req.headers['x-forwarded-for']) {
     const list = String(req.headers['x-forwarded-for']).split(',').map(s => s.trim());
@@ -32,7 +36,7 @@ function getClientIp(req) {
     }
   }
 
-  // Server-observed physical connection address (cannot be spoofed in HTTP headers)
+  // Server-observed physical connection address
   const rawIp = req.socket?.remoteAddress || req.connection?.remoteAddress || req.ip || '127.0.0.1';
   return normalizeIp(rawIp);
 }

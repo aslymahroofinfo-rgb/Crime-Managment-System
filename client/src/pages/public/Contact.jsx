@@ -212,10 +212,26 @@ export default function Contact() {
             <div className="d-flex flex-column gap-4">
               <div className="d-flex align-items-start gap-3 border-bottom pb-3">
                 <div className="p-3 bg-danger bg-opacity-10 text-danger rounded-3"><i className="bi bi-telephone-fill fs-4"></i></div>
-                <div>
-                  <h6 className="fw-bold text-dark mb-1">Emergency Numbers</h6>
-                  <p className="text-danger fw-bold mb-0">911 (Immediate Assistance)</p>
-                  <span className="text-muted small">Hotline Support: 1-800-555-CRIME</span>
+                <div className="w-100">
+                  <h6 className="fw-bold text-dark mb-1">National Emergency Numbers</h6>
+                  <div className="d-flex flex-column gap-1.5 mt-2 small">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="text-muted">Police Emergency:</span>
+                      <a href="tel:119" className="badge bg-danger text-white text-decoration-none px-2 py-1">Call 119</a>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="text-muted">1990 Suwa Seriya Ambulance:</span>
+                      <a href="tel:1990" className="badge bg-success text-white text-decoration-none px-2 py-1">Call 1990</a>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="text-muted">Fire & Rescue:</span>
+                      <a href="tel:110" className="badge bg-dark text-white text-decoration-none px-2 py-1">Call 110</a>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center pt-1 border-top mt-1">
+                      <span className="text-muted">Government Info (GIC):</span>
+                      <a href="tel:1919" className="text-primary fw-semibold text-decoration-none">Call 1919</a>
+                    </div>
+                  </div>
                 </div>
               </div>
 

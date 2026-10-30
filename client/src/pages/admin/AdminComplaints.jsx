@@ -797,31 +797,31 @@ export default function AdminComplaints() {
                       <span>Submission Security Information</span>
                     </h6>
 
-                    {viewComplaint.submissionMetadata ? (
+                    {viewComplaint.submissionMetadata && viewComplaint.submissionMetadata.ipAddress ? (
                       <div className="p-3 bg-light rounded-3 border">
                         <div className="row g-3 small">
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Observed IP Address</span>
                             <strong className="text-dark font-monospace">
-                              {viewComplaint.submissionMetadata.ipAddress || 'Not recorded'}
+                              {viewComplaint.submissionMetadata.ipAddress}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Device Category</span>
                             <strong className="text-dark">
-                              {viewComplaint.submissionMetadata.deviceType || 'Desktop'}
+                              {viewComplaint.submissionMetadata.deviceType || 'Unknown'}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Browser / Client</span>
                             <strong className="text-dark">
-                              {viewComplaint.submissionMetadata.browser || 'Browser'}
+                              {viewComplaint.submissionMetadata.browser || 'Unknown'}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-3">
                             <span className="text-muted d-block">Operating System</span>
                             <strong className="text-dark">
-                              {viewComplaint.submissionMetadata.operatingSystem || 'OS'}
+                              {viewComplaint.submissionMetadata.operatingSystem || 'Unknown'}
                             </strong>
                           </div>
                           <div className="col-sm-6 col-md-4">
