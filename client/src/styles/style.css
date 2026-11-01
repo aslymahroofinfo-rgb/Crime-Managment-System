@@ -1032,20 +1032,6 @@ main,
 /* Section padding helper */
 section { scroll-margin-top: 70px; }
 
-/* ---------- Responsive tweaks ---------- */
-@media (max-width: 991px) {
-  .hero-section { padding: 70px 0 60px; }
-  .hero-stats { gap: 24px; }
-  .step-arrow { display: none; }
-}
-
-@media (max-width: 575px) {
-  .hero-title { font-size: 1.8rem; }
-  .hero-subtitle { font-size: 0.95rem; }
-  .btn-hero-primary, .btn-hero-outline { width: 100%; text-align: center; }
-  .stat-number { font-size: 2rem; }
-}
-
 /* ============================================================
    ADMIN SIDEBAR DASHBOARD SYSTEM
    ============================================================ */
@@ -1068,6 +1054,12 @@ section { scroll-margin-top: 70px; }
 .admin-sidebar-header {
   padding: 24px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.admin-sidebar-collapse {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .admin-sidebar-menu {
@@ -1114,20 +1106,6 @@ section { scroll-margin-top: 70px; }
   background-color: var(--light-bg);
   padding: 40px;
   overflow-y: auto;
-}
-
-/* Mobile responsive sidebar */
-@media (max-width: 991px) {
-  .admin-container {
-    flex-direction: column;
-  }
-  .admin-sidebar {
-    width: 100%;
-    min-height: auto;
-  }
-  .admin-content {
-    padding: 24px 16px;
-  }
 }
 /* ============================================================
    VERTICAL TIMELINE FOR COMPLAINT TRACKING / DETAILS
@@ -1244,6 +1222,455 @@ input, textarea, select, .form-control, .form-select {
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 0.25rem rgba(26, 58, 107, 0.25) !important;
   outline: none !important;
+}
+
+/* ============================================================
+   GLOBAL RESPONSIVE UTILITIES & CONTAINER GUARDS
+   ============================================================ */
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+.min-w-0 {
+  min-width: 0 !important;
+}
+
+/* Safe word break on identifiers, hashes, and tabular values */
+.text-break-anywhere,
+.font-monospace,
+.complaint-id,
+.doc-meta-id,
+td,
+th {
+  overflow-wrap: anywhere;
+}
+
+/* Container safety preventing body-level horizontal overflow */
+.container,
+.container-fluid {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Table Responsive Scrolling Guard */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 0;
+}
+
+/* Modal Dialog Sizing & Internal Scrolling */
+.modal-dialog {
+  margin: 1.25rem auto;
+  max-width: calc(100% - 32px);
+}
+
+.modal-content {
+  border-radius: 16px;
+  max-height: calc(100vh - 2.5rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  flex-shrink: 0;
+}
+
+.modal-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-grow: 1;
+}
+
+.modal-footer {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINT SYSTEM
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. TABLET BREAKPOINT (<= 991.98px)
+   ------------------------------------------------------------ */
+@media (max-width: 991.98px) {
+  /* Subtle Watermark Scaling */
+  body::before {
+    background-size: min(52vw, 420px);
+    opacity: 0.14;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    padding: 70px 0 60px;
+  }
+  .hero-stats {
+    gap: 24px;
+    justify-content: center;
+  }
+  .step-arrow {
+    display: none;
+  }
+
+  /* Admin Sidebar Drawer on Tablet/Mobile */
+  .admin-container {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+  .admin-sidebar-header {
+    padding: 14px 20px;
+  }
+  .admin-sidebar-collapse {
+    display: none;
+  }
+  .admin-sidebar-collapse.show {
+    display: block;
+    animation: fadeInAdminMenu 0.2s ease-in-out;
+  }
+  .admin-content {
+    padding: 24px 20px;
+    min-width: 0;
+  }
+
+  /* Grid spacing on tablet */
+  .dashboard-stats-row > div {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@keyframes fadeInAdminMenu {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------------------
+   2. MOBILE BREAKPOINT (<= 575.98px)
+   ------------------------------------------------------------ */
+@media (max-width: 575.98px) {
+  /* Mobile Watermark - subtle, centered, crisp, never dominant */
+  body::before {
+    background-size: min(48vw, 240px);
+    opacity: 0.10;
+  }
+
+  /* Navbar Proportions */
+  .navbar {
+    padding: 8px 0 !important;
+  }
+  .navbar > .container,
+  .navbar > .container-fluid {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+  .navbar-brand {
+    font-size: 0.90rem !important;
+    gap: 8px !important;
+  }
+  .navbar-brand .brand-logo,
+  .navbar-brand img[alt="Logo"] {
+    height: 40px !important;
+    margin-right: 6px !important;
+  }
+  .navbar-brand span {
+    line-height: 1.15;
+  }
+  .navbar-brand span small {
+    font-size: 0.72rem !important;
+  }
+  .navbar-toggler {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 6px 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    padding: 45px 0 35px;
+  }
+  .hero-title {
+    font-size: clamp(1.6rem, 7.5vw, 2.2rem) !important;
+    line-height: 1.25;
+  }
+  .hero-subtitle {
+    font-size: 0.92rem !important;
+    margin-bottom: 24px !important;
+  }
+  .hero-stats {
+    gap: 12px;
+    margin-top: 28px;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    width: 100%;
+  }
+  .hero-stat-number {
+    font-size: 1.45rem !important;
+  }
+  .hero-stat-label {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.4px;
+  }
+  .btn-hero-primary,
+  .btn-hero-outline,
+  .btn-hero-emergency {
+    width: 100% !important;
+    text-align: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 12px 18px !important;
+  }
+
+  /* Citizen Dashboard Welcome Card */
+  .citizen-welcome-card {
+    padding: 24px 20px !important;
+  }
+  .citizen-welcome-title {
+    font-size: clamp(1.35rem, 5.5vw, 1.6rem) !important;
+    text-align: center;
+  }
+  .citizen-welcome-subtitle {
+    font-size: clamp(0.85rem, 3.8vw, 0.95rem) !important;
+    text-align: center;
+    margin-bottom: 1rem !important;
+  }
+  .citizen-welcome-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    margin: 0 !important;
+  }
+  .citizen-welcome-btn {
+    width: 100% !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    padding: 10px 16px !important;
+    font-size: 0.92rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+  }
+
+  /* Dashboard Statistics Cards (1 Column on Mobile) */
+  .dashboard-stat-card {
+    padding: 18px 20px !important;
+    min-height: 104px !important;
+    height: auto !important;
+  }
+  .dashboard-stat-card .stat-icon-box {
+    width: 56px !important;
+    height: 56px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .dashboard-stat-card .stat-icon-box i {
+    font-size: 1.5rem !important;
+  }
+  .dashboard-stat-card .stat-card-label {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.5px;
+  }
+  .dashboard-stat-card .stat-card-num {
+    font-size: 1.65rem !important;
+  }
+
+  /* General Cards on Mobile */
+  .card:not(.dashboard-stat-card):not(.citizen-welcome-card) {
+    border-radius: 14px !important;
+  }
+  .card-body.p-4,
+  .card-body.p-sm-5,
+  .card.p-4,
+  .card.p-sm-5 {
+    padding: 1.25rem 1rem !important;
+  }
+  .card-header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Modals on Mobile (No Horizontal Overflow, Safe Internal Scrolling) */
+  .modal-dialog {
+    margin: 0.5rem auto !important;
+    max-width: calc(100% - 16px) !important;
+  }
+  .modal-content {
+    border-radius: 14px !important;
+    max-height: calc(100vh - 1rem) !important;
+  }
+  .modal-header {
+    padding: 1rem !important;
+  }
+  .modal-header h4,
+  .modal-header h5,
+  .modal-title {
+    font-size: 1.1rem !important;
+  }
+  .modal-body {
+    padding: 1rem !important;
+  }
+  .modal-footer {
+    padding: 0.75rem 1rem !important;
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+  .modal-footer > * {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  .modal-body .d-flex.justify-content-end,
+  .modal-body .d-flex.justify-content-between {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .modal-body .d-flex.justify-content-end > .btn,
+  .modal-body .d-flex.justify-content-between > .btn,
+  .modal-body .d-flex.justify-content-end > button,
+  .modal-body .d-flex.justify-content-between > button {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Forms & Touch-Friendly Inputs */
+  .form-control,
+  .form-select {
+    font-size: 0.95rem;
+    padding: 0.65rem 0.85rem;
+    min-height: 44px;
+    width: 100% !important;
+  }
+  .form-label {
+    font-size: 0.85rem;
+    margin-bottom: 0.35rem;
+  }
+  .input-group {
+    width: 100% !important;
+  }
+  .input-group-text {
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* Mobile Buttons */
+  .btn:not(.btn-sm):not(.btn-close):not(.p-0) {
+    min-height: 44px;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    font-size: 0.92rem !important;
+  }
+  .btn-group.gap-1,
+  .btn-group.gap-2 {
+    flex-wrap: wrap !important;
+  }
+
+  /* Evidence Gallery Responsive Wrap */
+  .evidence-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  /* Admin Content */
+  .admin-content {
+    padding: 18px 12px !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   3. SMALL PHONES BREAKPOINT (<= 374.98px)
+   ------------------------------------------------------------ */
+@media (max-width: 374.98px) {
+  /* Watermark */
+  body::before {
+    background-size: min(44vw, 170px);
+    opacity: 0.08;
+  }
+
+  /* Navbar */
+  .navbar > .container,
+  .navbar > .container-fluid {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  .navbar-brand {
+    font-size: 0.80rem !important;
+    gap: 6px !important;
+  }
+  .navbar-brand .brand-logo,
+  .navbar-brand img[alt="Logo"] {
+    height: 34px !important;
+    margin-right: 4px !important;
+  }
+  .navbar-brand span small {
+    font-size: 0.65rem !important;
+  }
+  .navbar-toggler {
+    min-width: 40px !important;
+    min-height: 40px !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Hero Stats */
+  .hero-stats {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Welcome Card */
+  .citizen-welcome-card {
+    padding: 18px 14px !important;
+  }
+  .citizen-welcome-title {
+    font-size: 1.25rem !important;
+  }
+  .citizen-welcome-subtitle {
+    font-size: 0.82rem !important;
+  }
+
+  /* Stat Cards */
+  .dashboard-stat-card {
+    padding: 14px 16px !important;
+    min-height: 96px !important;
+  }
+  .dashboard-stat-card .stat-icon-box {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  .dashboard-stat-card .stat-icon-box i {
+    font-size: 1.3rem !important;
+  }
+
+  /* Modals */
+  .modal-dialog {
+    margin: 0.25rem auto !important;
+    max-width: calc(100% - 8px) !important;
+  }
+  .modal-body {
+    padding: 0.75rem !important;
+  }
+
+  /* Admin Content */
+  .admin-content {
+    padding: 14px 8px !important;
+  }
 }
 
 /* ============================================================

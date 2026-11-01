@@ -189,16 +189,16 @@ export default function AdminDashboard() {
       </div>
 
       {/* Statistics Dashboard Cards */}
-      <div className="row g-4 mb-4">
+      <div className="row g-3 g-md-4 mb-4 dashboard-stats-row">
         {/* Total Complaints */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-primary">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-primary dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Total Complaints</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{statTotal}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Total Complaints</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{statTotal}</h3>
               </div>
-              <div className="p-3 bg-primary bg-opacity-10 text-primary rounded-3">
+              <div className="p-3 bg-primary bg-opacity-10 text-primary rounded-3 stat-icon-box">
                 <i className="bi bi-clipboard-data-fill fs-3"></i>
               </div>
             </div>
@@ -206,14 +206,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* Pending Complaints */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-warning">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-warning dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Pending Cases</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{statPending}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Pending Cases</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{statPending}</h3>
               </div>
-              <div className="p-3 bg-warning bg-opacity-10 text-warning rounded-3">
+              <div className="p-3 bg-warning bg-opacity-10 text-warning rounded-3 stat-icon-box">
                 <i className="bi bi-hourglass-split fs-3"></i>
               </div>
             </div>
@@ -221,14 +221,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* Resolved Complaints */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-success">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-success dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Resolved Cases</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{statResolved}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Resolved Cases</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{statResolved}</h3>
               </div>
-              <div className="p-3 bg-success bg-opacity-10 text-success rounded-3">
+              <div className="p-3 bg-success bg-opacity-10 text-success rounded-3 stat-icon-box">
                 <i className="bi bi-patch-check-fill fs-3"></i>
               </div>
             </div>
@@ -236,14 +236,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* Registered Users */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-info">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-info dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Registered Users</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{userCount}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Registered Users</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{userCount}</h3>
               </div>
-              <div className="p-3 bg-info bg-opacity-10 text-info rounded-3">
+              <div className="p-3 bg-info bg-opacity-10 text-info rounded-3 stat-icon-box">
                 <i className="bi bi-people-fill fs-3"></i>
               </div>
             </div>

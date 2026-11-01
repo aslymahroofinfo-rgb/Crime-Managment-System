@@ -198,26 +198,26 @@ export default function Dashboard() {
       )}
 
       {/* Welcome Panel */}
-      <div className="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
+      <div className="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4 citizen-welcome-card">
         <div className="row align-items-center g-3">
           <div className="col-md-8 text-center text-md-start">
-            <h3 className="fw-bold text-dark mb-1">
+            <h3 className="fw-bold text-dark mb-1 citizen-welcome-title">
               Welcome Back{user?.fullName ? `, ${user.fullName}` : ''}!
             </h3>
-            <p className="text-muted mb-0 small">
+            <p className="text-muted mb-0 small citizen-welcome-subtitle">
               Here is the latest activity and status of your filed crime complaints.
             </p>
           </div>
-          <div className="col-md-4 text-center text-md-end">
+          <div className="col-md-4 text-center text-md-end citizen-welcome-actions">
             <Link
               to="/profile"
-              className="btn btn-outline-primary px-4 py-2 fw-semibold shadow-sm mb-2 mb-md-0 me-md-2"
+              className="btn btn-outline-primary px-4 py-2 fw-semibold shadow-sm mb-2 mb-md-0 me-md-2 citizen-welcome-btn"
             >
               <i className="bi bi-person-lines-fill me-2"></i>Edit Profile
             </Link>
             <Link
               to="/complaint"
-              className="btn btn-primary px-4 py-2 fw-semibold shadow-sm"
+              className="btn btn-primary px-4 py-2 fw-semibold shadow-sm citizen-welcome-btn"
               style={{ background: 'var(--primary)', border: 'none' }}
             >
               <i className="bi bi-plus-lg me-2"></i>File New Complaint
@@ -227,16 +227,16 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Count Grid */}
-      <div className="row g-4 mb-4">
+      <div className="row g-3 g-md-4 mb-4 dashboard-stats-row">
         {/* Total Complaints */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-primary">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-primary dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Total Complaints</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{statTotal}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Total Complaints</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{statTotal}</h3>
               </div>
-              <div className="p-3 bg-primary bg-opacity-10 text-primary rounded-3">
+              <div className="p-3 bg-primary bg-opacity-10 text-primary rounded-3 stat-icon-box">
                 <i className="bi bi-folder-fill fs-3"></i>
               </div>
             </div>
@@ -244,14 +244,14 @@ export default function Dashboard() {
         </div>
 
         {/* Pending Cases */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-warning">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-warning dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Pending Cases</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{statPending}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Pending Cases</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{statPending}</h3>
               </div>
-              <div className="p-3 bg-warning bg-opacity-10 text-warning rounded-3">
+              <div className="p-3 bg-warning bg-opacity-10 text-warning rounded-3 stat-icon-box">
                 <i className="bi bi-hourglass-split fs-3"></i>
               </div>
             </div>
@@ -259,14 +259,14 @@ export default function Dashboard() {
         </div>
 
         {/* Investigating Cases */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-info">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-info dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Investigating</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{statInvestigating}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Investigating</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{statInvestigating}</h3>
               </div>
-              <div className="p-3 bg-info bg-opacity-10 text-info rounded-3">
+              <div className="p-3 bg-info bg-opacity-10 text-info rounded-3 stat-icon-box">
                 <i className="bi bi-zoom-in fs-3"></i>
               </div>
             </div>
@@ -274,14 +274,14 @@ export default function Dashboard() {
         </div>
 
         {/* Resolved Cases */}
-        <div className="col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-success">
+        <div className="col-12 col-sm-6 col-xl-3">
+          <div className="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-success dashboard-stat-card">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold text-uppercase">Resolved Cases</span>
-                <h3 className="fw-bold text-dark mt-1 mb-0">{statResolved}</h3>
+                <span className="text-muted small fw-bold text-uppercase stat-card-label">Resolved Cases</span>
+                <h3 className="fw-bold text-dark mt-1 mb-0 stat-card-num">{statResolved}</h3>
               </div>
-              <div className="p-3 bg-success bg-opacity-10 text-success rounded-3">
+              <div className="p-3 bg-success bg-opacity-10 text-success rounded-3 stat-icon-box">
                 <i className="bi bi-patch-check-fill fs-3"></i>
               </div>
             </div>
